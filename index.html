@@ -19,6 +19,7 @@
         .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 12px; }
         .btn-login { background: #00a8ff; color: white; }
         .btn-reg { background: #0080ff; color: white; }
+        .btn-buy { background: #ff4757; color: white; font-size: 16px; padding: 12px; font-weight: bold; width: 100%; border-radius: 8px; border: none; cursor: pointer; }
         .user-info { font-size: 13px; color: #00a8ff; font-weight: bold; }
 
         .container { padding: 15px; max-width: 600px; margin: auto; }
@@ -49,6 +50,14 @@
         
         .history-item { background: #0b131e; padding: 8px; border-radius: 5px; margin-bottom: 5px; font-size: 12px; border-left: 3px solid #00a8ff; }
         .empty-text { text-align: center; color: #888; font-size: 13px; padding: 10px 0; }
+
+        /* ตัวปรับจำนวนสินค้าแบบสไตล์หน้า 2 */
+        .qty-box { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0; }
+        .qty-btn { width: 35px; height: 35px; background: #0b131e; border: 1px solid #1e3044; color: white; font-size: 18px; border-radius: 5px; cursor: pointer; }
+        .qty-input { width: 60px !important; text-align: center; margin-bottom: 0 !important; }
+        
+        .success-icon { font-size: 50px; text-align: center; margin-bottom: 10px; display: block; }
+        .warning-box { background: #0b131e; padding: 10px; border-radius: 8px; border-left: 4px solid #ff4757; font-size: 12px; margin-bottom: 15px; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -57,9 +66,8 @@
 
     <header>
         <button class="menu-btn" onclick="toggleMenu()">☰</button>
-        <!-- ซ่อนปุ่มเข้า Admin แอบไว้ที่การรัวคลิกที่โลโก้ 5 ครั้ง -->
         <div class="logo-box" onclick="handleSecretClick()">
-            <img src="1000098783.png" class="logo-img" alt="Logo">
+            <img src="1000098783.png" class="logo-img" id="siteLogo" alt="Logo">
             <div class="logo-text">Phoo shop</div>
         </div>
         <div class="auth-btns" id="authBox">
@@ -68,11 +76,11 @@
         </div>
     </header>
 
-    <!-- Side Menu สำหรับลูกค้าทั่วไป (ไม่มี Admin) -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="close-menu" onclick="toggleMenu()">✕ ปิดเมนู</div>
         <a href="#">🏠 หน้าแรก</a>
         <a href="#" onclick="openModal('topup')">🧧 เติมเงิน (ซองอั่งเปา)</a>
+        <a href="#" onclick="openModal('useCode')">🎁 กรอกโค้ดรับเงิน</a>
         <a href="#" onclick="scrollToCategory('randomSection')">🎲 หมวดหมู่สุ่ม</a>
         <a href="#" onclick="scrollToCategory('shopSection')">🛒 หมวดหมู่สั่งซื้อ</a>
         <a href="#" onclick="openModal('randomHistory')">📜 ประวัติการสุ่ม</a>
@@ -107,31 +115,32 @@
             </div>
         </div>
 
-        <!-- หมวดหมู่สุ่ม (ไม่มีสินค้าเริ่มต้น) -->
         <div class="card" id="randomSection">
             <div class="card-title">🎲 หมวดหมู่สุ่มรหัส</div>
             <div id="randomProductList"></div>
         </div>
 
-        <!-- หมวดหมู่สั่งซื้อ (ไม่มีสินค้าเริ่มต้น) -->
         <div class="card" id="shopSection">
             <div class="card-title">🛒 หมวดหมู่สั่งซื้อ</div>
             <div id="shopProductList"></div>
         </div>
     </div>
 
-    <!-- Modal ใช้งานร่วมกัน -->
     <div class="modal" id="appModal">
         <div class="modal-content" id="modalContent"></div>
     </div>
 
     <script>
         let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
-        let products = JSON.parse(localStorage.getItem('products')) || []; // ลบสินค้าเดิมออกหมดแล้ว
+        let products = JSON.parse(localStorage.getItem('products')) || [];
         let randomHistory = JSON.parse(localStorage.getItem('randomHistory')) || [];
         let shopHistory = JSON.parse(localStorage.getItem('shopHistory')) || [];
         let usedVouchers = JSON.parse(localStorage.getItem('usedVouchers')) || [];
+        let promoCodes = JSON.parse(localStorage.getItem('promoCodes')) || {};
+        let siteLogoUrl = localStorage.getItem('siteLogoUrl') || '1000098783.png';
         let secretClickCount = 0;
+        let selectedProduct = null;
+        let currentQty = 1;
 
         function saveAll() {
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
@@ -139,19 +148,14 @@
             localStorage.setItem('randomHistory', JSON.stringify(randomHistory));
             localStorage.setItem('shopHistory', JSON.stringify(shopHistory));
             localStorage.setItem('usedVouchers', JSON.stringify(usedVouchers));
+            localStorage.setItem('promoCodes', JSON.stringify(promoCodes));
+            localStorage.setItem('siteLogoUrl', siteLogoUrl);
             updateUI();
         }
 
-        function toggleMenu() {
-            document.getElementById('mobileMenu').classList.toggle('active');
-        }
+        function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('active'); }
+        function scrollToCategory(id) { toggleMenu(); document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
 
-        function scrollToCategory(id) {
-            toggleMenu();
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // ทางลับเข้า Admin ล็อคพิเศษ (กดโลโก้ 5 ครั้ง)
         function handleSecretClick() {
             secretClickCount++;
             if (secretClickCount >= 5) {
@@ -161,7 +165,17 @@
             setTimeout(() => secretClickCount = 0, 3000);
         }
 
+        function getFormattedDate() {
+            const now = new Date();
+            const day = now.getDate();
+            const month = now.getMonth() + 1;
+            const year = now.getFullYear() + 543; // พ.ศ.
+            const time = now.toLocaleTimeString('th-TH');
+            return `วันที่ ${day}/${month}/${year} เวลา ${time}`;
+        }
+
         function updateUI() {
+            document.getElementById('siteLogo').src = siteLogoUrl;
             const authBox = document.getElementById('authBox');
             if(currentUser) {
                 authBox.innerHTML = `
@@ -176,7 +190,6 @@
                 `;
             }
 
-            // Render สินค้าในหมวดหมู่
             const randomList = document.getElementById('randomProductList');
             const shopList = document.getElementById('shopProductList');
             randomList.innerHTML = '';
@@ -185,39 +198,100 @@
             const randomItems = products.filter(p => p.type === 'random');
             const shopItems = products.filter(p => p.type === 'shop');
 
-            if(randomItems.length === 0) {
-                randomList.innerHTML = '<div class="empty-text">ยังไม่มีสินค้าในหมวดหมู่นี้</div>';
-            } else {
+            if(randomItems.length === 0) randomList.innerHTML = '<div class="empty-text">ยังไม่มีสินค้าในหมวดหมู่นี้</div>';
+            else {
                 randomItems.forEach(p => {
                     randomList.innerHTML += `
                         <div class="product-card">
                             <img src="${p.img}" class="product-img">
                             <h4>${p.name}</h4>
                             <p style="color:#00a8ff; font-weight:bold;">ราคา: ${p.price} บาท | สต็อก: ${p.stock}</p>
-                            <button class="btn btn-login" style="width:100%; margin-top:8px;" onclick="playRandom(${p.id})">🎲 สุ่มสินค้า</button>
-                        </div>
-                    `;
+                            <button class="btn btn-login" style="width:100%; margin-top:8px;" onclick="openProductDetail(${p.id})">🎲 สุ่มรหัสนี้</button>
+                        </div>`;
                 });
             }
 
-            if(shopItems.length === 0) {
-                shopList.innerHTML = '<div class="empty-text">ยังไม่มีสินค้าในหมวดหมู่นี้</div>';
-            } else {
+            if(shopItems.length === 0) shopList.innerHTML = '<div class="empty-text">ยังไม่มีสินค้าในหมวดหมู่นี้</div>';
+            else {
                 shopItems.forEach(p => {
                     shopList.innerHTML += `
                         <div class="product-card">
                             <img src="${p.img}" class="product-img">
                             <h4>${p.name}</h4>
                             <p style="color:#00a8ff; font-weight:bold;">ราคา: ${p.price} บาท | สต็อก: ${p.stock}</p>
-                            <button class="btn btn-login" style="width:100%; margin-top:8px;" onclick="buyProduct(${p.id})">🛒 สั่งซื้อเลย</button>
-                        </div>
-                    `;
+                            <button class="btn btn-login" style="width:100%; margin-top:8px;" onclick="openProductDetail(${p.id})">🛒 สั่งซื้อสินค้า</button>
+                        </div>`;
                 });
             }
         }
 
-        function closeModal() {
-            document.getElementById('appModal').style.display = 'none';
+        function closeModal() { document.getElementById('appModal').style.display = 'none'; }
+
+        // หน้าต่างสินค้าแบบที่ 2 (ตามรูปตัวอย่าง)
+        function openProductDetail(id) {
+            selectedProduct = products.find(p => p.id === id);
+            currentQty = 1;
+            const modal = document.getElementById('appModal');
+            const content = document.getElementById('modalContent');
+
+            content.innerHTML = `
+                <span class="close-modal" onclick="closeModal()">✕</span>
+                <h3>${selectedProduct.name}</h3>
+                <img src="${selectedProduct.img}" style="width:100%; height:150px; object-fit:cover; border-radius:8px; margin-bottom:10px;">
+                
+                <div class="warning-box">
+                    <strong>🎥 คำเตือนก่อนซื้อ!!</strong><br>
+                    ก่อนซื้อทุกครั้งควรอัดคลิปหน้าจอ ไปจนถึงเข้ารหัสผ่านแอป Roblox หากไม่มีคลิปงดเคลมทุกกรณี เพื่อความสบายใจทั้ง 2 ฝ่าย
+                </div>
+
+                <div style="font-size:14px; margin-bottom:5px;">จำนวนสินค้า</div>
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                    <input type="number" id="buyQty" class="qty-input" value="1" readonly>
+                    <button class="qty-btn" onclick="changeQty(1)">+</button>
+                </div>
+                <p style="text-align:center; font-size:12px; color:#888; margin-bottom:15px;">เหลือสินค้าอีก ${selectedProduct.stock} ชิ้น</p>
+
+                <button class="btn-buy" onclick="confirmAction()">${selectedProduct.type === 'random' ? '🎲 เริ่มสุ่มสินค้า' : '🛒 สั่งซื้อสินค้า'}</button>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        function changeQty(amount) {
+            currentQty += amount;
+            if(currentQty < 1) currentQty = 1;
+            if(currentQty > selectedProduct.stock) currentQty = selectedProduct.stock;
+            document.getElementById('buyQty').value = currentQty;
+        }
+
+        function confirmAction() {
+            if(!currentUser) return alert('กรุณาเข้าสู่ระบบก่อนทำรายการ!');
+            const totalPrice = selectedProduct.price * currentQty;
+            if(currentUser.balance < totalPrice) return alert('ยอดเงินคงเหลือไม่เพียงพอ!');
+            if(selectedProduct.stock < currentQty) return alert('สินค้าในสต็อกมีไม่พอ!');
+
+            currentUser.balance -= totalPrice;
+            selectedProduct.stock -= currentQty;
+            const dateTime = getFormattedDate();
+
+            if(selectedProduct.type === 'random') {
+                // ระบบสุ่ม
+                const isWin = Math.random() > 0.5;
+                if(isWin) {
+                    alert(`🎉 ยินดีด้วยคุณได้รับรหัส\n\n📅 ${dateTime}`);
+                    randomHistory.push({ title: selectedProduct.name, result: `ได้รับรหัส (${dateTime})` });
+                } else {
+                    alert(`😭 เกลือ ลองอีกนิด\n\n📅 ${dateTime}`);
+                    randomHistory.push({ title: selectedProduct.name, result: `เกลือ (${dateTime})` });
+                }
+            } else {
+                // ระบบซื้อ
+                alert(`✅ ยินดีด้วยคุณได้รับรหัสโปรดติดต่อทาง Admin\n\n📅 ${dateTime}`);
+                shopHistory.push({ title: selectedProduct.name, price: totalPrice, time: dateTime });
+            }
+
+            saveAll();
+            closeModal();
         }
 
         function openModal(type) {
@@ -230,8 +304,7 @@
                     <h3>🔑 เข้าสู่ระบบ</h3>
                     <input type="text" id="logUser" placeholder="ชื่อผู้ใช้งาน">
                     <input type="password" id="logPass" placeholder="รหัสผ่าน">
-                    <button onclick="login()">เข้าสู่ระบบ</button>
-                `;
+                    <button onclick="login()">เข้าสู่ระบบ</button>`;
             } else if(type === 'register') {
                 content.innerHTML = `
                     <span class="close-modal" onclick="closeModal()">✕</span>
@@ -239,45 +312,45 @@
                     <input type="text" id="regUser" placeholder="ชื่อผู้ใช้งาน">
                     <input type="password" id="regPass1" placeholder="รหัสผ่าน (อย่างน้อย 6 ตัว)">
                     <input type="password" id="regPass2" placeholder="ยืนยันรหัสผ่าน">
-                    <button onclick="register()">สมัครสมาชิก</button>
-                `;
+                    <button onclick="register()">สมัครสมาชิก</button>`;
             } else if(type === 'topup') {
                 content.innerHTML = `
                     <span class="close-modal" onclick="closeModal()">✕</span>
                     <h3>🧧 เติมเงินซองอั่งเปา</h3>
                     <p style="font-size:12px; color:#ccc; margin-bottom:10px;">ระบบจะดึงเงินเข้าบัญชี TrueMoney: <b>0652869712</b></p>
                     <input type="text" id="voucherUrl" placeholder="วางลิงก์ซองอั่งเปาที่นี่...">
-                    <button onclick="processVoucher()">ยืนยันการเติมเงิน</button>
-                `;
+                    <button onclick="processVoucher()">ยืนยันการเติมเงิน</button>`;
+            } else if(type === 'useCode') {
+                content.innerHTML = `
+                    <span class="close-modal" onclick="closeModal()">✕</span>
+                    <h3>🎁 กรอกโค้ดรับเงิน</h3>
+                    <input type="text" id="codeInp" placeholder="กรอก Code ที่นี่">
+                    <button onclick="redeemCode()">รับเงินทันที</button>`;
             } else if(type === 'randomHistory') {
                 let html = `<span class="close-modal" onclick="closeModal()">✕</span><h3>📜 ประวัติการสุ่ม</h3>`;
-                randomHistory.forEach(h => html += `<div class="history-item">🎲 ${h.title} - ผลลัพธ์: <b>${h.result}</b> (${h.time})</div>`);
+                randomHistory.forEach(h => html += `<div class="history-item">🎲 ${h.title}<br><b>ผลลัพธ์:</b> ${h.result}</div>`);
                 content.innerHTML = randomHistory.length ? html : html + '<div class="empty-text">ไม่มีประวัติการสุ่ม</div>';
             } else if(type === 'shopHistory') {
                 let html = `<span class="close-modal" onclick="closeModal()">✕</span><h3>🛍️ ประวัติการสั่งซื้อ</h3>`;
-                shopHistory.forEach(h => html += `<div class="history-item">🛒 ${h.title} - ราคา: ${h.price} บาท (${h.time})</div>`);
+                shopHistory.forEach(h => html += `<div class="history-item">✅ ${h.title}<br><b>ราคา:</b> ${h.price} บาท (${h.time})</div>`);
                 content.innerHTML = shopHistory.length ? html : html + '<div class="empty-text">ไม่มีประวัติการสั่งซื้อ</div>';
             } else if(type === 'adminLogin') {
                 content.innerHTML = `
                     <span class="close-modal" onclick="closeModal()">✕</span>
                     <h3>🔐 เข้าสู่ระบบ Admin</h3>
                     <input type="password" id="adminPass" placeholder="กรอกรหัสผ่าน Admin">
-                    <button onclick="checkAdmin()">เข้าสู่ระบบหลังบ้าน</button>
-                `;
+                    <button onclick="checkAdmin()">เข้าสู่ระบบหลังบ้าน</button>`;
             }
             modal.style.display = 'flex';
         }
 
-        // ระบบสมัครสมาชิก
         function register() {
             const u = document.getElementById('regUser').value;
             const p1 = document.getElementById('regPass1').value;
             const p2 = document.getElementById('regPass2').value;
-
             if(!u || !p1 || !p2) return alert('กรุณากรอกข้อมูลให้ครบ!');
             if(p1.length < 6) return alert('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร!');
             if(p1 !== p2) return alert('รหัสผ่านทั้ง 2 ครั้งไม่ตรงกัน!');
-
             currentUser = { username: u, password: p1, balance: 0 };
             saveAll();
             alert('สมัครสมาชิกสำเร็จ!');
@@ -295,19 +368,13 @@
             }
         }
 
-        function logout() {
-            currentUser = null;
-            saveAll();
-            alert('ออกจากระบบแล้ว');
-        }
+        function logout() { currentUser = null; saveAll(); alert('ออกจากระบบแล้ว'); }
 
-        // ระบบเติมเงิน
         function processVoucher() {
             if(!currentUser) return alert('กรุณาเข้าสู่ระบบก่อนเติมเงิน!');
             const url = document.getElementById('voucherUrl').value;
             if(!url.includes('v=') && !url.includes('truemoney')) return alert('ลิงก์อั่งเปาไม่ถูกต้อง!');
             if(usedVouchers.includes(url)) return alert('ลิงก์อั่งเปานี้ถูกใช้งานไปแล้ว!');
-
             usedVouchers.push(url);
             const addedMoney = Math.floor(Math.random() * 50) + 10;
             currentUser.balance += addedMoney;
@@ -316,45 +383,24 @@
             closeModal();
         }
 
-        // สุ่ม & ซื้อ
-        function playRandom(id) {
+        function redeemCode() {
             if(!currentUser) return alert('กรุณาเข้าสู่ระบบก่อน!');
-            const p = products.find(item => item.id === id);
-            if(currentUser.balance < p.price) return alert('ยอดเงินไม่พอ!');
-            if(p.stock <= 0) return alert('สินค้าหมด!');
-
-            currentUser.balance -= p.price;
-            p.stock -= 1;
-
-            const isWin = Math.random() > 0.5;
-            let resultText = isWin ? "ยินดีด้วยคุณได้รับรหัสโปรดติดต่อทาง Admin" : "เกลือ ลองอีกนิด";
-            alert(resultText);
-
-            randomHistory.push({ title: p.name, result: resultText, time: new Date().toLocaleTimeString() });
-            saveAll();
+            const code = document.getElementById('codeInp').value;
+            if(promoCodes[code]) {
+                currentUser.balance += promoCodes[code];
+                alert(`กรอกโค้ดสำเร็จ! ได้รับเงิน ${promoCodes[code]} บาท`);
+                delete promoCodes[code];
+                saveAll();
+                closeModal();
+            } else {
+                alert('โค้ดไม่ถูกต้องหรือถูกใช้งานไปแล้ว!');
+            }
         }
 
-        function buyProduct(id) {
-            if(!currentUser) return alert('กรุณาเข้าสู่ระบบก่อน!');
-            const p = products.find(item => item.id === id);
-            if(currentUser.balance < p.price) return alert('ยอดเงินไม่พอ!');
-            if(p.stock <= 0) return alert('สินค้าหมด!');
-
-            currentUser.balance -= p.price;
-            p.stock -= 1;
-            alert('สั่งซื้อสินค้าสำเร็จ! โปรดติดต่อ Admin เพื่อรับของ');
-            shopHistory.push({ title: p.name, price: p.price, time: new Date().toLocaleTimeString() });
-            saveAll();
-        }
-
-        // ตรวจสอบ Admin (รหัสผ่าน Phoo143)
         function checkAdmin() {
             const pass = document.getElementById('adminPass').value;
-            if(pass === 'Phoo143') {
-                openAdminPanel();
-            } else {
-                alert('รหัสผ่าน Admin ไม่ถูกต้อง!');
-            }
+            if(pass === 'Phoo143') openAdminPanel();
+            else alert('รหัสผ่าน Admin ไม่ถูกต้อง!');
         }
 
         function openAdminPanel() {
@@ -364,6 +410,17 @@
                 <h3>⚙️ ระบบ Admin หลังบ้าน</h3>
                 <hr style="margin-bottom:10px; border-color:#1e3044;">
                 
+                <h4>🖼️ เปลี่ยนโลโก้เว็บไซต์</h4>
+                <input type="text" id="newLogoUrl" placeholder="URL รูปโลโก้ใหม่" value="${siteLogoUrl}">
+                <button onclick="changeLogo()">บันทึกโลโก้</button>
+
+                <hr style="margin:15px 0; border-color:#1e3044;">
+                <h4>🎁 ทำ Code แจกเงิน</h4>
+                <input type="text" id="newCode" placeholder="ชื่อ Code (เช่น PHOO100)">
+                <input type="number" id="newCodeVal" placeholder="จำนวนเงิน">
+                <button onclick="createCode()" style="background:#0080ff;">สร้าง Code</button>
+
+                <hr style="margin:15px 0; border-color:#1e3044;">
                 <h4>➕ เพิ่มสินค้าเข้าหมวดหมู่</h4>
                 <input type="text" id="pName" placeholder="ชื่อสินค้า">
                 <input type="number" id="pPrice" placeholder="ราคาสินค้า (บาท)">
@@ -377,9 +434,28 @@
 
                 <hr style="margin:15px 0; border-color:#1e3044;">
                 <h4>✨ เสกเงินเข้าบัญชีตัวเอง</h4>
-                <input type="number" id="addMoneyNum" placeholder="จำนวนเงินที่ต้องการเสก">
+                <input type="number" id="addMoneyNum" placeholder="จำนวนเงิน">
                 <button onclick="adminAddMoney()" style="background:#2ed573;">เสกเงินทันที</button>
             `;
+        }
+
+        function changeLogo() {
+            const url = document.getElementById('newLogoUrl').value;
+            if(url) {
+                siteLogoUrl = url;
+                saveAll();
+                alert('เปลี่ยนโลโก้สำเร็จ!');
+            }
+        }
+
+        function createCode() {
+            const code = document.getElementById('newCode').value;
+            const val = parseFloat(document.getElementById('newCodeVal').value);
+            if(code && val) {
+                promoCodes[code] = val;
+                saveAll();
+                alert(`สร้าง Code: ${code} (เงิน ${val} บาท) สำเร็จ!`);
+            }
         }
 
         function addProduct() {
