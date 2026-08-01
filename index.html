@@ -20,6 +20,7 @@
         .btn-login { background: #00a8ff; color: white; }
         .btn-reg { background: #0080ff; color: white; }
         .btn-buy { background: #ff4757; color: white; font-size: 16px; padding: 12px; font-weight: bold; width: 100%; border-radius: 8px; border: none; cursor: pointer; }
+        .btn-random { background: #2ed573; color: white; font-size: 16px; padding: 12px; font-weight: bold; width: 100%; border-radius: 8px; border: none; cursor: pointer; }
         .user-info { font-size: 13px; color: #00a8ff; font-weight: bold; }
 
         .container { padding: 15px; max-width: 600px; margin: auto; }
@@ -51,12 +52,10 @@
         .history-item { background: #0b131e; padding: 8px; border-radius: 5px; margin-bottom: 5px; font-size: 12px; border-left: 3px solid #00a8ff; }
         .empty-text { text-align: center; color: #888; font-size: 13px; padding: 10px 0; }
 
-        /* ตัวปรับจำนวนสินค้าแบบสไตล์หน้า 2 */
         .qty-box { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0; }
         .qty-btn { width: 35px; height: 35px; background: #0b131e; border: 1px solid #1e3044; color: white; font-size: 18px; border-radius: 5px; cursor: pointer; }
         .qty-input { width: 60px !important; text-align: center; margin-bottom: 0 !important; }
         
-        .success-icon { font-size: 50px; text-align: center; margin-bottom: 10px; display: block; }
         .warning-box { background: #0b131e; padding: 10px; border-radius: 8px; border-left: 4px solid #ff4757; font-size: 12px; margin-bottom: 15px; line-height: 1.5; }
     </style>
 </head>
@@ -169,7 +168,7 @@
             const now = new Date();
             const day = now.getDate();
             const month = now.getMonth() + 1;
-            const year = now.getFullYear() + 543; // พ.ศ.
+            const year = now.getFullYear() + 543;
             const time = now.toLocaleTimeString('th-TH');
             return `วันที่ ${day}/${month}/${year} เวลา ${time}`;
         }
@@ -227,33 +226,45 @@
 
         function closeModal() { document.getElementById('appModal').style.display = 'none'; }
 
-        // หน้าต่างสินค้าแบบที่ 2 (ตามรูปตัวอย่าง)
+        // แยกเปิดหน้าซื้อ / หน้าสุ่ม (หน้าที่ 2)
         function openProductDetail(id) {
             selectedProduct = products.find(p => p.id === id);
             currentQty = 1;
             const modal = document.getElementById('appModal');
             const content = document.getElementById('modalContent');
 
-            content.innerHTML = `
-                <span class="close-modal" onclick="closeModal()">✕</span>
-                <h3>${selectedProduct.name}</h3>
-                <img src="${selectedProduct.img}" style="width:100%; height:150px; object-fit:cover; border-radius:8px; margin-bottom:10px;">
-                
-                <div class="warning-box">
-                    <strong>🎥 คำเตือนก่อนซื้อ!!</strong><br>
-                    ก่อนซื้อทุกครั้งควรอัดคลิปหน้าจอ ไปจนถึงเข้ารหัสผ่านแอป Roblox หากไม่มีคลิปงดเคลมทุกกรณี เพื่อความสบายใจทั้ง 2 ฝ่าย
-                </div>
+            if(selectedProduct.type === 'shop') {
+                content.innerHTML = `
+                    <span class="close-modal" onclick="closeModal()">✕</span>
+                    <h3>🛒 สั่งซื้อ: ${selectedProduct.name}</h3>
+                    <img src="${selectedProduct.img}" style="width:100%; height:150px; object-fit:cover; border-radius:8px; margin-bottom:10px;">
+                    
+                    <div class="warning-box">
+                        <strong>🎥 คำเตือนก่อนซื้อ!!</strong><br>
+                        คำเตือน !! ก่อนซื้อทุกครั้งอัดคลิปหน้าจอ ไปจนถึงเข้ารหัสผ่านแอป Roblox หากไม่มีคลิปงดเคลมทุกกรณี เพื่อความสบายใจทั้ง2ฝ่าย อัดคลิปด้วยนะจ้ะสุดหล่อ<br>
+                        <span style="color:#2ed573;">[ ซื้อไปแล้วถูกใจฝากรีวิวให้ด้วยนะค้าบ ]</span>
+                    </div>
 
-                <div style="font-size:14px; margin-bottom:5px;">จำนวนสินค้า</div>
-                <div class="qty-box">
-                    <button class="qty-btn" onclick="changeQty(-1)">-</button>
-                    <input type="number" id="buyQty" class="qty-input" value="1" readonly>
-                    <button class="qty-btn" onclick="changeQty(1)">+</button>
-                </div>
-                <p style="text-align:center; font-size:12px; color:#888; margin-bottom:15px;">เหลือสินค้าอีก ${selectedProduct.stock} ชิ้น</p>
+                    <div style="font-size:14px; margin-bottom:5px;">จำนวนสินค้า</div>
+                    <div class="qty-box">
+                        <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                        <input type="number" id="buyQty" class="qty-input" value="1" readonly>
+                        <button class="qty-btn" onclick="changeQty(1)">+</button>
+                    </div>
+                    <p style="text-align:center; font-size:12px; color:#888; margin-bottom:15px;">เหลือสินค้าอีก ${selectedProduct.stock} ชิ้น</p>
 
-                <button class="btn-buy" onclick="confirmAction()">${selectedProduct.type === 'random' ? '🎲 เริ่มสุ่มสินค้า' : '🛒 สั่งซื้อสินค้า'}</button>
-            `;
+                    <button class="btn-buy" onclick="confirmAction()">🛒 ซื้อสินค้าเลย</button>
+                `;
+            } else {
+                content.innerHTML = `
+                    <span class="close-modal" onclick="closeModal()">✕</span>
+                    <h3>🎲 สุ่มรหัส: ${selectedProduct.name}</h3>
+                    <img src="${selectedProduct.img}" style="width:100%; height:150px; object-fit:cover; border-radius:8px; margin-bottom:10px;">
+                    <p style="text-align:center; font-weight:bold; color:#00a8ff; margin-bottom:10px;">ราคาค่าสุ่ม: ${selectedProduct.price} บาท / ครั้ง</p>
+                    <p style="text-align:center; font-size:12px; color:#888; margin-bottom:15px;">เหลือสต็อกให้สุ่มอีก ${selectedProduct.stock} ชิ้น</p>
+                    <button class="btn-random" onclick="confirmAction()">🎲 สุ่มรหัสเลยทันที</button>
+                `;
+            }
             modal.style.display = 'flex';
         }
 
@@ -266,16 +277,15 @@
 
         function confirmAction() {
             if(!currentUser) return alert('กรุณาเข้าสู่ระบบก่อนทำรายการ!');
-            const totalPrice = selectedProduct.price * currentQty;
+            const totalPrice = selectedProduct.type === 'shop' ? selectedProduct.price * currentQty : selectedProduct.price;
             if(currentUser.balance < totalPrice) return alert('ยอดเงินคงเหลือไม่เพียงพอ!');
-            if(selectedProduct.stock < currentQty) return alert('สินค้าในสต็อกมีไม่พอ!');
+            if(selectedProduct.stock < 1) return alert('สินค้าหมด!');
 
             currentUser.balance -= totalPrice;
-            selectedProduct.stock -= currentQty;
+            selectedProduct.stock -= (selectedProduct.type === 'shop' ? currentQty : 1);
             const dateTime = getFormattedDate();
 
             if(selectedProduct.type === 'random') {
-                // ระบบสุ่ม
                 const isWin = Math.random() > 0.5;
                 if(isWin) {
                     alert(`🎉 ยินดีด้วยคุณได้รับรหัส\n\n📅 ${dateTime}`);
@@ -285,7 +295,6 @@
                     randomHistory.push({ title: selectedProduct.name, result: `เกลือ (${dateTime})` });
                 }
             } else {
-                // ระบบซื้อ
                 alert(`✅ ยินดีด้วยคุณได้รับรหัสโปรดติดต่อทาง Admin\n\n📅 ${dateTime}`);
                 shopHistory.push({ title: selectedProduct.name, price: totalPrice, time: dateTime });
             }
@@ -332,7 +341,7 @@
                 content.innerHTML = randomHistory.length ? html : html + '<div class="empty-text">ไม่มีประวัติการสุ่ม</div>';
             } else if(type === 'shopHistory') {
                 let html = `<span class="close-modal" onclick="closeModal()">✕</span><h3>🛍️ ประวัติการสั่งซื้อ</h3>`;
-                shopHistory.forEach(h => html += `<div class="history-item">✅ ${h.title}<br><b>ราคา:</b> ${h.price} บาท (${h.time})</div>`);
+                shopHistory.forEach(h => html += `<div class="history-item">✅ ${h.title}<br><b>ราคา:</b> ${h.price} บาท<br><b>เวลา:</b> ${h.time}</div>`);
                 content.innerHTML = shopHistory.length ? html : html + '<div class="empty-text">ไม่มีประวัติการสั่งซื้อ</div>';
             } else if(type === 'adminLogin') {
                 content.innerHTML = `
