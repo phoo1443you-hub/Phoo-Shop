@@ -21,7 +21,7 @@
         .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 12px; }
         .btn-login { background: #0077ff; color: white; }
         .btn-reg { background: #0056b3; color: white; }
-        .btn-buy { background: #0077ff; color: white; font-size: 16px; padding: 12px; font-weight: bold; width: 100%; border-radius: 8px; border: none; cursor: pointer; }
+        .btn-buy { background: #ff0000; color: white; font-size: 16px; padding: 12px; font-weight: bold; width: 100%; border-radius: 8px; border: none; cursor: pointer; }
         .btn-random { background: #00b894; color: white; font-size: 16px; padding: 12px; font-weight: bold; width: 100%; border-radius: 8px; border: none; cursor: pointer; }
         .user-info { font-size: 13px; color: #0077ff; font-weight: bold; }
 
@@ -38,8 +38,8 @@
         .grid-btn h4 { color: #222; margin-bottom: 5px; }
         .grid-btn p { color: #0077ff; font-size: 12px; }
 
-        .product-card { background: #ffffff; border: 1px solid #d1d8e0; border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
-        .product-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; border: 1px solid #eee; }
+        .product-card { background: #ffffff; border: 1px solid #d1d8e0; border-radius: 10px; padding: 12px; text-align: center; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        .product-img { width: 100%; height: 130px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; border: 1px solid #eee; }
 
         .mobile-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #ffffff; z-index: 1000; transition: 0.3s; padding: 20px; border-right: 2px solid #0077ff; overflow-y: auto; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
         .mobile-menu.active { left: 0; }
@@ -60,13 +60,8 @@
         .qty-btn { width: 35px; height: 35px; background: #f0f4f8; border: 1px solid #ccc; color: #333; font-size: 18px; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .qty-input { width: 60px !important; text-align: center; margin-bottom: 0 !important; }
         
-        .warning-box { background: #eef2f7; padding: 10px; border-radius: 8px; border-left: 4px solid #0077ff; font-size: 12px; margin-bottom: 15px; line-height: 1.5; color: #333; }
+        .warning-box { background: #fff5f5; padding: 8px; border-radius: 6px; border: 1px solid #feb2b2; font-size: 11px; margin-bottom: 10px; line-height: 1.4; color: #333; text-align: left; }
         .file-label { display: block; background: #f8fafc; border: 1px dashed #0077ff; padding: 10px; text-align: center; border-radius: 5px; cursor: pointer; margin-bottom: 10px; font-size: 13px; color: #0077ff; font-weight: bold; }
-
-        .social-btn-box { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-        .btn-social { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; color: white; font-size: 14px; cursor: pointer; text-align: center; text-decoration: none; display: block; }
-        .btn-fb { background: #1877f2; }
-        .btn-tiktok { background: #000000; border: 1px solid #fe2c55; color: #fe2c55; }
 
         .admin-prod-item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .admin-prod-thumb { width: 45px; height: 45px; object-fit: cover; border-radius: 5px; border: 1px solid #0077ff; flex-shrink: 0; }
@@ -145,11 +140,11 @@
             </a>
             <div class="grid-btn" onclick="scrollToCategory('randomSection')">
                 <h4>🎲 หมวดหมู่สุ่ม</h4>
-                <p>สุ่มรหัสสุดคุ้ม</p>
+                <p>การันตีรหัส 50%</p>
             </div>
             <div class="grid-btn" onclick="scrollToCategory('shopSection')">
                 <h4>🛒 หมวดหมู่สั่งซื้อ</h4>
-                <p>เลือกซื้อไอดีตรง</p>
+                <p>การันตีรหัส 100%</p>
             </div>
             <div class="grid-btn" onclick="window.open('https://tiktok.com/@CIDOROT479')">
                 <h4>🎬 TikTok</h4>
@@ -158,7 +153,7 @@
         </div>
 
         <div class="card" id="randomSection">
-            <div class="card-title">🎲 หมวดหมู่สุ่มรหัส</div>
+            <div class="card-title">🎲 หมวดหมู่สุ่ม</div>
             <div id="randomProductList"></div>
         </div>
 
@@ -180,6 +175,7 @@
         let usedVouchers = JSON.parse(localStorage.getItem('usedVouchers')) || [];
         let promoCodes = JSON.parse(localStorage.getItem('promoCodes')) || {};
         let siteLogoUrl = localStorage.getItem('siteLogoUrl') || '1000098783.png';
+        let randomCounter = parseInt(localStorage.getItem('randomCounter')) || 0;
         let secretClickCount = 0;
         let selectedProduct = null;
         let currentQty = 1;
@@ -195,6 +191,7 @@
                 localStorage.setItem('usedVouchers', JSON.stringify(usedVouchers));
                 localStorage.setItem('promoCodes', JSON.stringify(promoCodes));
                 localStorage.setItem('siteLogoUrl', siteLogoUrl);
+                localStorage.setItem('randomCounter', randomCounter);
             } catch (e) {
                 alert('หน่วยความจำเต็ม (LocalStorage Limit) ไม่สามารถบันทึกเพิ่มได้ กรุณาล้างข้อมูลหรือใช้รูปที่มีขนาดเล็กลง');
             }
@@ -228,7 +225,7 @@
             
             let totalStockCount = 0;
             products.forEach(p => totalStockCount += Number(p.stock));
-            let totalSoldAndRandom = shopHistory.length + randomHistory.length;
+            let totalSoldAndRandom = shopHistory.length + randomHistory.filter(h => h.result.includes('ยินดีด้วยคุณได้รับรหัส')).length;
 
             document.getElementById('statUsers').innerText = currentUser ? "1 คน" : "0 คน";
             document.getElementById('statProducts').innerText = products.length + " ชิ้น";
@@ -257,15 +254,25 @@
             const randomItems = products.filter(p => p.type === 'random');
             const shopItems = products.filter(p => p.type === 'shop');
 
+            const sharedNoticeHTML = `
+                <div class="warning-box" style="margin-bottom:8px; margin-top:6px;">
+                    <strong>🎥 คำเตือนก่อนซื้อ!!</strong><br>
+                    คำเตือน !! ก่อนซื้อทุกครั้งอัดคลิปหน้าจอ ไปจนถึงเข้ารหัสผ่านแอป Roblox หากไม่มีคลิปงดเคลมทุกกรณี เพื่อความสบายใจทั้ง2ฝ่าย อัดคลิปด้วยนะจ้ะสุดหล่อ<br>
+                    <span style="color:#00b894; font-weight:bold;">[ ซื้อไปแล้วถูกใจฝากรีวิวให้ด้วยนะค้าบ ]</span>
+                </div>
+            `;
+
             if(randomItems.length === 0) randomList.innerHTML = '<div class="empty-text">ยังไม่มีสินค้าในหมวดหมู่นี้</div>';
             else {
                 randomItems.forEach(p => {
                     randomList.innerHTML += `
                         <div class="product-card">
                             <img src="${p.img}" class="product-img">
-                            <h4 style="color:#333;">${p.name}</h4>
-                            <p style="color:#0077ff; font-weight:bold;">ราคา: ${p.price} บาท | สต็อก: ${p.stock}</p>
-                            <button class="btn btn-login" style="width:100%; margin-top:8px;" onclick="openProductDetail(${p.id})">🎲 สุ่มรหัสนี้</button>
+                            <h4 style="color:#333; margin-bottom:2px;">${p.name}</h4>
+                            <p style="color:#0077ff; font-weight:bold; margin-bottom:4px;">ราคา: ${p.price} บาท | สต็อก: ${p.stock}</p>
+                            <div style="font-size:13px; font-weight:bold; color:#0077ff; margin-bottom:4px;">📌 การันตีรหัส 50%</div>
+                            ${sharedNoticeHTML}
+                            <button class="btn btn-login" style="width:100%; margin-top:4px;" onclick="openProductDetail(${p.id})">🎲 สุ่มรหัส</button>
                         </div>`;
                 });
             }
@@ -276,9 +283,11 @@
                     shopList.innerHTML += `
                         <div class="product-card">
                             <img src="${p.img}" class="product-img">
-                            <h4 style="color:#333;">${p.name}</h4>
-                            <p style="color:#0077ff; font-weight:bold;">ราคา: ${p.price} บาท | สต็อก: ${p.stock}</p>
-                            <button class="btn btn-login" style="width:100%; margin-top:8px;" onclick="openProductDetail(${p.id})">🛒 สั่งซื้อสินค้า</button>
+                            <h4 style="color:#333; margin-bottom:2px;">${p.name}</h4>
+                            <p style="color:#0077ff; font-weight:bold; margin-bottom:4px;">ราคา: ${p.price} บาท | สต็อก: ${p.stock}</p>
+                            <div style="font-size:13px; font-weight:bold; color:#0077ff; margin-bottom:4px;">📌 การันตีรหัส 100%</div>
+                            ${sharedNoticeHTML}
+                            <button class="btn btn-login" style="width:100%; margin-top:4px;" onclick="openProductDetail(${p.id})">🛒 สั่งซื้อสินค้า</button>
                         </div>`;
                 });
             }
@@ -292,17 +301,22 @@
             const modal = document.getElementById('appModal');
             const content = document.getElementById('modalContent');
 
+            const sharedNoticePopupHTML = `
+                <div class="warning-box" style="margin-bottom:8px; margin-top:6px;">
+                    <strong>🎥 คำเตือนก่อนซื้อ!!</strong><br>
+                    คำเตือน !! ก่อนซื้อทุกครั้งอัดคลิปหน้าจอ ไปจนถึงเข้ารหัสผ่านแอป Roblox หากไม่มีคลิปงดเคลมทุกกรณี เพื่อความสบายใจทั้ง2ฝ่าย อัดคลิปด้วยนะจ้ะสุดหล่อ<br>
+                    <span style="color:#00b894; font-weight:bold;">[ ซื้อไปแล้วถูกใจฝากรีวิวให้ด้วยนะค้าบ ]</span>
+                </div>
+            `;
+
             if(selectedProduct.type === 'shop') {
                 content.innerHTML = `
                     <span class="close-modal" onclick="closeModal()">✕</span>
                     <h3>🛒 สั่งซื้อ: ${selectedProduct.name}</h3>
-                    <img src="${selectedProduct.img}" style="width:100%; height:150px; object-fit:cover; border-radius:8px; margin-bottom:10px;">
+                    <img src="${selectedProduct.img}" style="width:100%; height:140px; object-fit:cover; border-radius:8px; margin-bottom:10px;">
                     
-                    <div class="warning-box">
-                        <strong>🎥 คำเตือนก่อนซื้อ!!</strong><br>
-                        คำเตือน !! ก่อนซื้อทุกครั้งอัดคลิปหน้าจอ ไปจนถึงเข้ารหัสผ่านแอป Roblox หากไม่มีคลิปงดเคลมทุกกรณี เพื่อความสบายใจทั้ง2ฝ่าย อัดคลิปด้วยนะจ้ะสุดหล่อ<br>
-                        <span style="color:#00b894; font-weight:bold;">[ ซื้อไปแล้วถูกใจฝากรีวิวให้ด้วยนะค้าบ ]</span>
-                    </div>
+                    <div style="font-size:14px; font-weight:bold; color:#0077ff; margin-bottom:5px; text-align:center;">📌 การันตีรหัส 100%</div>
+                    ${sharedNoticePopupHTML}
 
                     <div style="font-size:14px; margin-bottom:5px;">จำนวนสินค้า</div>
                     <div class="qty-box">
@@ -312,16 +326,19 @@
                     </div>
                     <p style="text-align:center; font-size:12px; color:#666; margin-bottom:15px;">เหลือสินค้าอีก ${selectedProduct.stock} ชิ้น</p>
 
-                    <button class="btn-buy" onclick="confirmAction()">🛒 ซื้อสินค้าเลย</button>
+                    <button class="btn-buy" onclick="confirmAction()">🛒 ซื้อสินค้า</button>
                 `;
             } else {
                 content.innerHTML = `
                     <span class="close-modal" onclick="closeModal()">✕</span>
-                    <h3>🎲 สุ่มรหัส: ${selectedProduct.name}</h3>
-                    <img src="${selectedProduct.img}" style="width:100%; height:150px; object-fit:cover; border-radius:8px; margin-bottom:10px;">
-                    <p style="text-align:center; font-weight:bold; color:#0077ff; margin-bottom:10px;">ราคาค่าสุ่ม: ${selectedProduct.price} บาท / ครั้ง</p>
-                    <p style="text-align:center; font-size:12px; color:#666; margin-bottom:15px;">เหลือสต็อกให้สุ่มอีก ${selectedProduct.stock} ชิ้น</p>
-                    <button class="btn-random" onclick="confirmAction()">🎲 สุ่มรหัสเลยทันที</button>
+                    <h3>🎲 สุ่ม: ${selectedProduct.name}</h3>
+                    <img src="${selectedProduct.img}" style="width:100%; height:140px; object-fit:cover; border-radius:8px; margin-bottom:10px;">
+                    <p style="text-align:center; font-weight:bold; color:#0077ff; margin-bottom:5px;">ราคาค่าสุ่ม: ${selectedProduct.price} บาท / ครั้ง</p>
+                    <div style="font-size:14px; font-weight:bold; color:#0077ff; margin-bottom:10px; text-align:center;">📌 การันตีรหัส 50% (ครบ 50 ครั้งออกชัวร์)</div>
+                    ${sharedNoticePopupHTML}
+
+                    <p style="text-align:center; font-size:12px; color:#666; margin-bottom:15px;">เหลือสต็อกให้สุ่มอีก ${selectedProduct.stock} ชิ้น (ครั้งที่สุ่มสะสม: ${randomCounter}/50)</p>
+                    <button class="btn-random" onclick="confirmAction()">🎲 สุ่มเสี่ยงโชค</button>
                 `;
             }
             modal.style.display = 'flex';
@@ -341,43 +358,61 @@
             if(selectedProduct.stock < 1) return alert('สินค้าหมด!');
 
             currentUser.balance -= totalPrice;
-            selectedProduct.stock -= (selectedProduct.type === 'shop' ? currentQty : 1);
             const dateTime = getFormattedDate();
 
             if(selectedProduct.type === 'random') {
-                const isWin = Math.random() > 0.5;
-                if(isWin) {
-                    randomHistory.push({ title: selectedProduct.name, result: `ได้รับรหัส (${dateTime})` });
-                    showWinModal("🎉 ยินดีด้วยคุณได้รับรหัส", dateTime);
+                randomCounter++;
+                let isWin = false;
+
+                if (randomCounter >= 50) {
+                    isWin = true;
+                    randomCounter = 0; // รีเซ็ตเมื่อครบ 50 ครั้ง
                 } else {
-                    randomHistory.push({ title: selectedProduct.name, result: `เกลือ (${dateTime})` });
-                    alert(`😭 เกลือ ลองอีกนิด\n\n📅 ${dateTime}`);
-                    closeModal();
+                    isWin = selectedProduct.price >= 50 ? (Math.random() < 0.4) : (Math.random() < 0.25);
+                    if (isWin) {
+                        randomCounter = 0; // รีเซ็ตหากสุ่มได้เองตามเรท
+                    }
+                }
+                
+                if(isWin) {
+                    selectedProduct.stock -= 1;
+                    randomHistory.push({ title: selectedProduct.name, result: `ยินดีด้วยคุณได้รับรหัสโปรดติดต่อทาง Admin เพื่อมารับรหัส (${dateTime})` });
+                    saveAll();
+                    showSuccessAndRedirect('random');
+                } else {
+                    randomHistory.push({ title: selectedProduct.name, result: `เกลือลองอีกนิดนะ (${dateTime})` });
+                    saveAll();
+                    showSuccessAndRedirect('random', '😭 เกลือลองอีกนิดนะ');
                 }
             } else {
-                shopHistory.push({ title: selectedProduct.name, price: totalPrice, time: dateTime });
-                showWinModal("✅ ยินดีด้วยคุณได้รับรหัสโปรดติดต่อทาง Admin", dateTime);
+                selectedProduct.stock -= currentQty;
+                shopHistory.push({ title: selectedProduct.name, price: totalPrice, time: dateTime, result: `ยินดีด้วยคุณได้รับรหัสโปรดติดต่อทาง Admin เพื่อมารับรหัส` });
+                saveAll();
+                showSuccessAndRedirect('shop');
             }
-
-            saveAll();
         }
 
-        function showWinModal(msg, dateTime) {
+        function showSuccessAndRedirect(type, customMsg) {
             const modal = document.getElementById('appModal');
             const content = document.getElementById('modalContent');
+            
+            const msg = customMsg || 'ยินดีด้วยคุณได้รับรหัสโปรดติดต่อทาง Admin เพื่อมารับรหัส';
 
             content.innerHTML = `
-                <span class="close-modal" onclick="closeModal()">✕</span>
-                <h3 style="color:#00b894;">${msg}</h3>
-                <p style="text-align:center; font-size:13px; color:#666; margin-bottom:15px;">📅 ${dateTime}</p>
-                <p style="text-align:center; font-size:12px; color:#666;">โปรดติดต่อ Admin ผ่านทางช่องทางด้านล่างเพื่อรับสินค้า</p>
-                
-                <div class="social-btn-box">
-                    <a href="https://www.facebook.com" target="_blank" class="btn-social btn-fb">📘 Facebook: ภู โย่วโย่ว</a>
-                    <a href="https://tiktok.com/@CIDOROT479" target="_blank" class="btn-social btn-tiktok">🎵 TikTok: cidorot479</a>
+                <div style="text-align:center; padding: 20px 0;">
+                    <div style="font-size: 50px; color: #00b894; margin-bottom: 10px;">✅</div>
+                    <h3 style="color:#00b894; margin-bottom: 10px; font-size:16px; line-height:1.5;">${msg}</h3>
+                    <p style="font-size: 13px; color: #666;">กำลังพาคุณไปหน้าประวัติ...</p>
                 </div>
             `;
-            modal.style.display = 'flex';
+
+            setTimeout(() => {
+                if(type === 'random') {
+                    openModal('randomHistory');
+                } else {
+                    openModal('shopHistory');
+                }
+            }, 1500);
         }
 
         function openModal(type) {
@@ -418,7 +453,7 @@
                 content.innerHTML = randomHistory.length ? html : html + '<div class="empty-text">ไม่มีประวัติการสุ่ม</div>';
             } else if(type === 'shopHistory') {
                 let html = `<span class="close-modal" onclick="closeModal()">✕</span><h3>🛍️ ประวัติการสั่งซื้อ</h3>`;
-                shopHistory.forEach(h => html += `<div class="history-item">✅ ${h.title}<br><b>ราคา:</b> ${h.price} บาท<br><b>เวลา:</b> ${h.time}</div>`);
+                shopHistory.forEach(h => html += `<div class="history-item">✅ ${h.title}<br><b>ราคา:</b> ${h.price} บาท<br><b>ผลลัพธ์:</b> ${h.result || 'ยินดีด้วยคุณได้รับรหัสโปรดติดต่อทาง Admin เพื่อมารับรหัส'}<br><b>เวลา:</b> ${h.time}</div>`);
                 content.innerHTML = shopHistory.length ? html : html + '<div class="empty-text">ไม่มีประวัติการสั่งซื้อ</div>';
             } else if(type === 'adminLogin') {
                 content.innerHTML = `
@@ -505,7 +540,7 @@
                 prodListHtml = '<div class="empty-text">ไม่มีสินค้าในระบบ</div>';
             } else {
                 products.forEach(p => {
-                    const typeTxt = p.type === 'random' ? '[สุ่ม]' : '[ซื้อ]';
+                    const typeTxt = p.type === 'random' ? '[หมวดสุ่ม]' : '[ซื้อ]';
                     prodListHtml += `
                         <div class="admin-prod-item">
                             <img src="${p.img}" class="admin-prod-thumb">
