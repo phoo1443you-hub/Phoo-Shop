@@ -8,25 +8,22 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
         body { background-color: #0b131e; color: white; }
         
-        /* Banner & Header */
         .top-bar { background: #00a8ff; color: #000; text-align: center; padding: 8px; font-weight: bold; font-size: 14px; }
         header { background: #121f2d; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: relative; }
         .logo-box { display: flex; align-items: center; gap: 10px; }
         .logo-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; }
         .logo-text { font-size: 20px; font-weight: bold; color: #00a8ff; }
         
-        /* Buttons Header */
         .menu-btn { font-size: 24px; cursor: pointer; color: #00a8ff; background: none; border: none; }
-        .auth-btns { display: flex; flex-direction: column; gap: 5px; }
+        .auth-btns { display: flex; flex-direction: column; gap: 5px; text-align: right; }
         .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 12px; }
         .btn-login { background: #00a8ff; color: white; }
         .btn-reg { background: #0080ff; color: white; }
+        .user-info { font-size: 13px; color: #00a8ff; font-weight: bold; }
 
-        /* Main Content Container */
         .container { padding: 15px; max-width: 600px; margin: auto; }
         .banner-img { width: 100%; border-radius: 10px; border: 2px solid #00a8ff; margin-bottom: 15px; }
         
-        /* Card Sections */
         .card { background: #121f2d; padding: 15px; border-radius: 10px; border: 1px solid #1e3044; margin-bottom: 15px; }
         .card-title { color: #00a8ff; font-size: 16px; margin-bottom: 10px; font-weight: bold; }
         
@@ -35,22 +32,22 @@
         .grid-btn h4 { color: white; margin-bottom: 5px; }
         .grid-btn p { color: #00a8ff; font-size: 12px; }
 
-        .stat-card { background: #121f2d; border: 1px solid #1e3044; padding: 12px; border-radius: 8px; text-align: center; }
-        .stat-num { color: #00a8ff; font-size: 20px; font-weight: bold; }
+        .product-card { background: #121f2d; border: 1px solid #1e3044; border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 10px; }
+        .product-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
 
-        /* Slide Menu (3 ขีด) */
-        .mobile-menu { position: fixed; top: 0; left: -250px; width: 250px; height: 100%; background: #121f2d; z-index: 1000; transition: 0.3s; padding: 20px; border-right: 2px solid #00a8ff; }
+        .mobile-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #121f2d; z-index: 1000; transition: 0.3s; padding: 20px; border-right: 2px solid #00a8ff; overflow-y: auto; }
         .mobile-menu.active { left: 0; }
         .mobile-menu a { display: block; color: white; text-decoration: none; padding: 12px 0; border-bottom: 1px solid #1e3044; }
         .close-menu { text-align: right; font-size: 20px; cursor: pointer; color: #ff4757; margin-bottom: 10px; }
 
-        /* Modal Popup (เข้าสู่ระบบ / สมัครสมาชิก) */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: #121f2d; padding: 20px; border-radius: 10px; width: 90%; max-width: 350px; border: 1px solid #00a8ff; position: relative; }
+        .modal-content { background: #121f2d; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; border: 1px solid #00a8ff; position: relative; max-height: 90vh; overflow-y: auto; }
         .modal-content h3 { color: #00a8ff; margin-bottom: 15px; text-align: center; }
-        .modal-content input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #1e3044; background: #0b131e; color: white; }
+        .modal-content input, .modal-content select { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #1e3044; background: #0b131e; color: white; }
         .modal-content button { width: 100%; padding: 10px; background: #00a8ff; border: none; color: white; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px; }
         .close-modal { position: absolute; right: 15px; top: 10px; font-size: 20px; cursor: pointer; color: #ff4757; }
+        
+        .history-item { background: #0b131e; padding: 8px; border-radius: 5px; margin-bottom: 5px; font-size: 12px; border-left: 3px solid #00a8ff; }
     </style>
 </head>
 <body>
@@ -60,103 +57,334 @@
     <header>
         <button class="menu-btn" onclick="toggleMenu()">☰</button>
         <div class="logo-box">
-            <img src="1000098783_3.png" class="logo-img" alt="Logo">
+            <img src="1000098783.png" class="logo-img" alt="Logo">
             <div class="logo-text">Phoo shop</div>
         </div>
-        <div class="auth-btns">
+        <div class="auth-btns" id="authBox">
             <button class="btn btn-login" onclick="openModal('login')">เข้าสู่ระบบ</button>
             <button class="btn btn-reg" onclick="openModal('register')">สมัครสมาชิก</button>
         </div>
     </header>
 
-    <!-- Side Menu -->
+    <!-- Side Menu (3 ขีด) -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="close-menu" onclick="toggleMenu()">✕ ปิดเมนู</div>
         <a href="#">🏠 หน้าแรก</a>
-        <a href="#" onclick="openModal('login')">🔑 เข้าสู่ระบบ</a>
-        <a href="#" onclick="openModal('register')">📝 สมัครสมาชิก</a>
-        <a href="https://tiktok.com/@CIDOROT479" target="_blank">🎬 รีวิวไก่ต้น (TikTok)</a>
-        <a href="#">💬 ติดต่อเพจ Facebook</a>
+        <a href="#" onclick="openModal('topup')">🧧 เติมเงิน (ซองอั่งเปา)</a>
+        <a href="#" onclick="openModal('randomCategory')">🎲 หมวดหมู่สุ่ม</a>
+        <a href="#" onclick="openModal('shopCategory')">🛒 หมวดหมู่สั่งซื้อ</a>
+        <a href="#" onclick="openModal('randomHistory')">📜 ประวัติการสุ่ม</a>
+        <a href="#" onclick="openModal('shopHistory')">🛍️ ประวัติการสั่งซื้อ</a>
+        <a href="https://tiktok.com/@CIDOROT479" target="_blank">🎬 รีวิวไก่ตัน (TikTok)</a>
+        <a href="#" onclick="openModal('adminLogin')" style="color: #ff4757;">🔐 เข้าสู่ระบบ Admin</a>
     </div>
 
     <div class="container">
-        <img src="1000098783_3.png" class="banner-img" alt="Phoo Shop Banner">
+        <img src="1000098783.png" class="banner-img" alt="Phoo Shop Banner">
 
         <div class="card">
             <div class="card-title">📢 ประกาศ</div>
-            <p style="font-size: 13px; color: #ccc;">ยินดีต้อนรับสู่ Phoo shop สั่งซื้อสินค้าหรือสุ่มรหัสแล้ว ให้ติดต่อทางเพจ Facebook หรือ TikTok เพื่อรับรหัสทันที!</p>
+            <p style="font-size: 13px; color: #ccc;">ยินดีต้อนรับสู่ Phoo shop สั่งซื้อสินค้าหรือสุ่มรหัสแล้ว ติดต่อทางเพจ Facebook หรือ TikTok ได้เลย!</p>
         </div>
 
         <div class="grid-2">
+            <div class="grid-btn" onclick="openModal('topup')">
+                <h4>🧧 เติมเงินอั่งเปา</h4>
+                <p>โอนเข้าเบอร์ 0652869712</p>
+            </div>
+            <div class="grid-btn" onclick="openModal('randomCategory')">
+                <h4>🎲 หมวดหมู่สุ่ม</h4>
+                <p>สุ่มรหัสสุดคุ้ม</p>
+            </div>
+            <div class="grid-btn" onclick="openModal('shopCategory')">
+                <h4>🛒 หมวดหมู่สั่งซื้อ</h4>
+                <p>เลือกซื้อไอดีตรง</p>
+            </div>
             <div class="grid-btn" onclick="window.open('https://tiktok.com/@CIDOROT479')">
-                <h4>รีวิวไก่ตัน</h4>
-                <p>TikTok: CIDOROT479</p>
-            </div>
-            <div class="grid-btn">
-                <h4>ติดต่อเพจ</h4>
-                <p>เพจ: ยังภูโย่วโย่ว</p>
-            </div>
-            <div class="grid-btn">
-                <h4>เติมเงินเข้าเว็บ</h4>
-                <p>TrueMoney Wallet</p>
-            </div>
-            <div class="grid-btn" onclick="openModal('register')">
-                <h4>สมัครสมาชิก</h4>
-                <p>ระบบอัตโนมัติ</p>
+                <h4>🎬 TikTok</h4>
+                <p>CIDOROT479</p>
             </div>
         </div>
 
-        <div class="grid-2">
-            <div class="stat-card">
-                <div>ผู้ใช้งานทั้งหมด</div>
-                <div class="stat-num">0 คน</div>
-            </div>
-            <div class="stat-card">
-                <div>สินค้าทั้งหมด</div>
-                <div class="stat-num">0 ชิ้น</div>
-            </div>
-            <div class="stat-card">
-                <div>สต็อกทั้งหมด</div>
-                <div class="stat-num">0 ชิ้น</div>
-            </div>
-            <div class="stat-card">
-                <div>ขายแล้วทั้งหมด</div>
-                <div class="stat-num">0 ชิ้น</div>
-            </div>
+        <!-- หมวดหมู่สุ่ม -->
+        <div class="card">
+            <div class="card-title">🎲 สินค้าสุ่มรหัส</div>
+            <div id="randomProductList"></div>
+        </div>
+
+        <!-- หมวดหมู่สั่งซื้อ -->
+        <div class="card">
+            <div class="card-title">🛒 สินค้าพร้อมขาย</div>
+            <div id="shopProductList"></div>
         </div>
     </div>
 
-    <!-- Modal Popup -->
-    <div class="modal" id="authModal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">✕</span>
-            <h3 id="modalTitle">เข้าสู่ระบบ</h3>
-            <input type="text" placeholder="ชื่อผู้ใช้งาน (Username)">
-            <input type="password" placeholder="รหัสผ่าน (Password)">
-            <button onclick="alert('ระบบบันทึกสำเร็จ!')">ยืนยัน</button>
-        </div>
+    <!-- Modal ใช้งานร่วมกัน -->
+    <div class="modal" id="appModal">
+        <div class="modal-content" id="modalContent"></div>
     </div>
 
     <script>
+        // Data LocalStorage
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+        let products = JSON.parse(localStorage.getItem('products')) || [
+            { id: 1, name: "สุ่มรหัสไก่ตัน VIP", price: 50, stock: 10, type: "random", img: "1000098783.png" },
+            { id: 2, name: "ไอดีผลปีศาจแท้", price: 150, stock: 5, type: "shop", img: "1000098783.png" }
+        ];
+        let randomHistory = JSON.parse(localStorage.getItem('randomHistory')) || [];
+        let shopHistory = JSON.parse(localStorage.getItem('shopHistory')) || [];
+        let usedVouchers = JSON.parse(localStorage.getItem('usedVouchers')) || [];
+
+        function saveAll() {
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            localStorage.setItem('products', JSON.stringify(products));
+            localStorage.setItem('randomHistory', JSON.stringify(randomHistory));
+            localStorage.setItem('shopHistory', JSON.stringify(shopHistory));
+            localStorage.setItem('usedVouchers', JSON.stringify(usedVouchers));
+            updateUI();
+        }
+
         function toggleMenu() {
             document.getElementById('mobileMenu').classList.toggle('active');
         }
 
-        function openModal(type) {
-            const modal = document.getElementById('authModal');
-            const title = document.getElementById('modalTitle');
-            if(type === 'login') {
-                title.innerText = 'เข้าสู่ระบบ';
+        function updateUI() {
+            const authBox = document.getElementById('authBox');
+            if(currentUser) {
+                authBox.innerHTML = `
+                    <div class="user-info">👤 ${currentUser.username}</div>
+                    <div class="user-info">💰 ${currentUser.balance} บาท</div>
+                    <button class="btn btn-reg" onclick="logout()" style="margin-top:3px;">ออกจากระบบ</button>
+                `;
             } else {
-                title.innerText = 'สมัครสมาชิก';
+                authBox.innerHTML = `
+                    <button class="btn btn-login" onclick="openModal('login')">เข้าสู่ระบบ</button>
+                    <button class="btn btn-reg" onclick="openModal('register')">สมัครสมาชิก</button>
+                `;
             }
-            modal.style.display = 'flex';
-            document.getElementById('mobileMenu').classList.remove('active');
+
+            // Render Products
+            const randomList = document.getElementById('randomProductList');
+            const shopList = document.getElementById('shopProductList');
+            randomList.innerHTML = '';
+            shopList.innerHTML = '';
+
+            products.forEach(p => {
+                const itemHTML = `
+                    <div class="product-card">
+                        <img src="${p.img}" class="product-img">
+                        <h4>${p.name}</h4>
+                        <p style="color:#00a8ff; font-weight:bold;">ราคา: ${p.price} บาท | สต็อก: ${p.stock}</p>
+                        <button class="btn btn-login" style="width:100%; margin-top:8px;" onclick="${p.type === 'random' ? `playRandom(${p.id})` : `buyProduct(${p.id})`}">
+                            ${p.type === 'random' ? '🎲 สุ่มสินค้า' : '🛒 สั่งซื้อเลย'}
+                        </button>
+                    </div>
+                `;
+                if(p.type === 'random') randomList.innerHTML += itemHTML;
+                else shopList.innerHTML += itemHTML;
+            });
         }
 
         function closeModal() {
-            document.getElementById('authModal').style.display = 'none';
+            document.getElementById('appModal').style.display = 'none';
         }
+
+        function openModal(type) {
+            const modal = document.getElementById('appModal');
+            const content = document.getElementById('modalContent');
+            toggleMenu();
+
+            if(type === 'login') {
+                content.innerHTML = `
+                    <span class="close-modal" onclick="closeModal()">✕</span>
+                    <h3>🔑 เข้าสู่ระบบ</h3>
+                    <input type="text" id="logUser" placeholder="ชื่อผู้ใช้งาน">
+                    <input type="password" id="logPass" placeholder="รหัสผ่าน">
+                    <button onclick="login()">เข้าสู่ระบบ</button>
+                `;
+            } else if(type === 'register') {
+                content.innerHTML = `
+                    <span class="close-modal" onclick="closeModal()">✕</span>
+                    <h3>📝 สมัครสมาชิก</h3>
+                    <input type="text" id="regUser" placeholder="ชื่อผู้ใช้งาน">
+                    <input type="password" id="regPass1" placeholder="รหัสผ่าน (อย่างน้อย 6 ตัว)">
+                    <input type="password" id="regPass2" placeholder="ยืนยันรหัสผ่าน">
+                    <button onclick="register()">สมัครสมาชิก</button>
+                `;
+            } else if(type === 'topup') {
+                content.innerHTML = `
+                    <span class="close-modal" onclick="closeModal()">✕</span>
+                    <h3>🧧 เติมเงินซองอั่งเปา</h3>
+                    <p style="font-size:12px; color:#ccc; margin-bottom:10px;">เงินจะเข้าบัญชี TrueMoney Wallet: <b>0652869712</b></p>
+                    <input type="text" id="voucherUrl" placeholder="วางลิงก์ซองอั่งเปาที่นี่...">
+                    <button onclick="processVoucher()">ยืนยันการเติมเงิน</button>
+                `;
+            } else if(type === 'randomHistory') {
+                let html = `<span class="close-modal" onclick="closeModal()">✕</span><h3>📜 ประวัติการสุ่ม</h3>`;
+                randomHistory.forEach(h => html += `<div class="history-item">🎲 ${h.title} - ผลลัพธ์: <b>${h.result}</b> (${h.time})</div>`);
+                content.innerHTML = html || html + '<p style="text-align:center;">ไม่มีประวัติการสุ่ม</p>';
+            } else if(type === 'shopHistory') {
+                let html = `<span class="close-modal" onclick="closeModal()">✕</span><h3>🛍️ ประวัติการสั่งซื้อ</h3>`;
+                shopHistory.forEach(h => html += `<div class="history-item">🛒 ${h.title} - ราคา: ${h.price} บาท (${h.time})</div>`);
+                content.innerHTML = html || html + '<p style="text-align:center;">ไม่มีประวัติการสั่งซื้อ</p>';
+            } else if(type === 'adminLogin') {
+                content.innerHTML = `
+                    <span class="close-modal" onclick="closeModal()">✕</span>
+                    <h3>🔐 เข้าสู่ระบบ Admin</h3>
+                    <input type="password" id="adminPass" placeholder="กรอกรหัสผ่าน Admin">
+                    <button onclick="checkAdmin()">เข้าสู่ระบบหลังบ้าน</button>
+                `;
+            }
+            modal.style.display = 'flex';
+        }
+
+        // ระบบสมาชิก
+        function register() {
+            const u = document.getElementById('regUser').value;
+            const p1 = document.getElementById('regPass1').value;
+            const p2 = document.getElementById('regPass2').value;
+
+            if(!u || !p1 || !p2) return alert('กรุณากรอกข้อมูลให้ครบ!');
+            if(p1.length < 6) return alert('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร!');
+            if(p1 !== p2) return alert('รหัสผ่านทั้ง 2 ครั้งไม่ตรงกัน!');
+
+            currentUser = { username: u, password: p1, balance: 0 };
+            saveAll();
+            alert('สมัครสมาชิกสำเร็จ!');
+            closeModal();
+        }
+
+        function login() {
+            const u = document.getElementById('logUser').value;
+            const p = document.getElementById('logPass').value;
+            if(u && p) {
+                currentUser = { username: u, balance: currentUser ? currentUser.balance : 0 };
+                saveAll();
+                alert('เข้าสู่ระบบสำเร็จ!');
+                closeModal();
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            saveAll();
+            alert('ออกจากระบบแล้ว');
+        }
+
+        // เติมเงินอั่งเปา
+        function processVoucher() {
+            if(!currentUser) return alert('กรุณาเข้าสู่ระบบก่อนเติมเงิน!');
+            const url = document.getElementById('voucherUrl').value;
+            if(!url.includes('v=') && !url.includes('truemoney')) return alert('ลิงก์อั่งเปาไม่ถูกต้อง!');
+            if(usedVouchers.includes(url)) return alert('ลิงก์อั่งเปานี้ถูกใช้งานไปแล้ว!');
+
+            usedVouchers.push(url);
+            const addedMoney = Math.floor(Math.random() * 50) + 10; // สุ่มยอดเงินจำลอง 10-60 บาท
+            currentUser.balance += addedMoney;
+            saveAll();
+            alert(`เติมเงินสำเร็จ! สรุปยอดเงินในลิงก์ได้ ${addedMoney} บาท เงินเข้าสู่ระบบเรียบร้อย`);
+            closeModal();
+        }
+
+        // สุ่ม & สั่งซื้อ
+        function playRandom(id) {
+            if(!currentUser) return alert('กรุณาเข้าสู่ระบบก่อน!');
+            const p = products.find(item => item.id === id);
+            if(currentUser.balance < p.price) return alert('ยอดเงินไม่พอ!');
+            if(p.stock <= 0) return alert('สินค้าหมด!');
+
+            currentUser.balance -= p.price;
+            p.stock -= 1;
+
+            const isWin = Math.random() > 0.5;
+            let resultText = "";
+
+            if(isWin) {
+                resultText = "ยินดีด้วยคุณได้รับรหัสโปรดติดต่อทาง Admin";
+                alert(resultText);
+            } else {
+                resultText = "เกลือ ลองอีกนิด";
+                alert(resultText);
+            }
+
+            randomHistory.push({ title: p.name, result: resultText, time: new Date().toLocaleTimeString() });
+            saveAll();
+        }
+
+        function buyProduct(id) {
+            if(!currentUser) return alert('กรุณาเข้าสู่ระบบก่อน!');
+            const p = products.find(item => item.id === id);
+            if(currentUser.balance < p.price) return alert('ยอดเงินไม่พอ!');
+            if(p.stock <= 0) return alert('สินค้าหมด!');
+
+            currentUser.balance -= p.price;
+            p.stock -= 1;
+            alert('สั่งซื้อสินค้าสำเร็จ! โปรดติดต่อ Admin เพื่อรับของ');
+            shopHistory.push({ title: p.name, price: p.price, time: new Date().toLocaleTimeString() });
+            saveAll();
+        }
+
+        // Admin
+        function checkAdmin() {
+            const pass = document.getElementById('adminPass').value;
+            if(pass === 'admin1234') {
+                openAdminPanel();
+            } else {
+                alert('รหัสผ่าน Admin ไม่ถูกต้อง!');
+            }
+        }
+
+        function openAdminPanel() {
+            const content = document.getElementById('modalContent');
+            content.innerHTML = `
+                <span class="close-modal" onclick="closeModal()">✕</span>
+                <h3>⚙️ ระบบ Admin หลังบ้าน</h3>
+                <hr style="margin-bottom:10px; border-color:#1e3044;">
+                
+                <h4>➕ เพิ่มสินค้าใหม่</h4>
+                <input type="text" id="pName" placeholder="ชื่อสินค้า">
+                <input type="number" id="pPrice" placeholder="ราคาสินค้า (บาท)">
+                <input type="number" id="pStock" placeholder="จำนวนสต็อก">
+                <select id="pType">
+                    <option value="random">หมวดหมู่สุ่ม</option>
+                    <option value="shop">หมวดหมู่สั่งซื้อ</option>
+                </select>
+                <input type="text" id="pImg" value="1000098783.png" placeholder="ชื่อรูปภาพ">
+                <button onclick="addProduct()">บันทึกเพิ่มสินค้า</button>
+
+                <hr style="margin:15px 0; border-color:#1e3044;">
+                <h4>✨ เสกเงินเข้าบัญชีตัวเอง</h4>
+                <input type="number" id="addMoneyNum" placeholder="จำนวนเงินที่ต้องการเสก">
+                <button onclick="adminAddMoney()" style="background:#2ed573;">เสกเงินทันที</button>
+            `;
+        }
+
+        function addProduct() {
+            const name = document.getElementById('pName').value;
+            const price = parseFloat(document.getElementById('pPrice').value);
+            const stock = parseInt(document.getElementById('pStock').value);
+            const type = document.getElementById('pType').value;
+            const img = document.getElementById('pImg').value;
+
+            if(!name || !price || !stock) return alert('กรอกข้อมูลสินค้าให้ครบ!');
+            products.push({ id: Date.now(), name, price, stock, type, img });
+            saveAll();
+            alert('เพิ่มสินค้าสำเร็จ!');
+            closeModal();
+        }
+
+        function adminAddMoney() {
+            if(!currentUser) return alert('กรุณาเข้าสู่ระบบหน้าบ้านก่อน!');
+            const money = parseFloat(document.getElementById('addMoneyNum').value);
+            if(!money) return;
+            currentUser.balance += money;
+            saveAll();
+            alert(`เสกเงินสำเร็จ +${money} บาท!`);
+            closeModal();
+        }
+
+        // Init
+        updateUI();
     </script>
 </body>
 </html>
