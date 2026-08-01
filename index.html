@@ -57,6 +57,13 @@
         .qty-input { width: 60px !important; text-align: center; margin-bottom: 0 !important; }
         
         .warning-box { background: #0b131e; padding: 10px; border-radius: 8px; border-left: 4px solid #ff4757; font-size: 12px; margin-bottom: 15px; line-height: 1.5; }
+        .file-label { display: block; background: #0b131e; border: 1px dashed #00a8ff; padding: 10px; text-align: center; border-radius: 5px; cursor: pointer; margin-bottom: 10px; font-size: 13px; }
+
+        /* ปุ่มติดต่อสี่เหลี่ยมยาวๆ */
+        .social-btn-box { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .btn-social { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; color: white; font-size: 14px; cursor: pointer; text-align: center; text-decoration: none; display: block; }
+        .btn-fb { background: #1877f2; }
+        .btn-tiktok { background: #000000; border: 1px solid #fe2c55; color: #fe2c55; }
     </style>
 </head>
 <body>
@@ -140,6 +147,8 @@
         let secretClickCount = 0;
         let selectedProduct = null;
         let currentQty = 1;
+        let tempLogoBase64 = null;
+        let tempProdBase64 = null;
 
         function saveAll() {
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
@@ -226,7 +235,6 @@
 
         function closeModal() { document.getElementById('appModal').style.display = 'none'; }
 
-        // แยกเปิดหน้าซื้อ / หน้าสุ่ม (หน้าที่ 2)
         function openProductDetail(id) {
             selectedProduct = products.find(p => p.id === id);
             currentQty = 1;
@@ -285,22 +293,44 @@
             selectedProduct.stock -= (selectedProduct.type === 'shop' ? currentQty : 1);
             const dateTime = getFormattedDate();
 
+            const modal = document.getElementById('appModal');
+            const content = document.getElementById('modalContent');
+
             if(selectedProduct.type === 'random') {
                 const isWin = Math.random() > 0.5;
                 if(isWin) {
-                    alert(`🎉 ยินดีด้วยคุณได้รับรหัส\n\n📅 ${dateTime}`);
                     randomHistory.push({ title: selectedProduct.name, result: `ได้รับรหัส (${dateTime})` });
+                    showWinModal("🎉 ยินดีด้วยคุณได้รับรหัส", dateTime);
                 } else {
-                    alert(`😭 เกลือ ลองอีกนิด\n\n📅 ${dateTime}`);
                     randomHistory.push({ title: selectedProduct.name, result: `เกลือ (${dateTime})` });
+                    alert(`😭 เกลือ ลองอีกนิด\n\n📅 ${dateTime}`);
+                    closeModal();
                 }
             } else {
-                alert(`✅ ยินดีด้วยคุณได้รับรหัสโปรดติดต่อทาง Admin\n\n📅 ${dateTime}`);
                 shopHistory.push({ title: selectedProduct.name, price: totalPrice, time: dateTime });
+                showWinModal("✅ ยินดีด้วยคุณได้รับรหัสโปรดติดต่อทาง Admin", dateTime);
             }
 
             saveAll();
-            closeModal();
+        }
+
+        // แสดงหน้าได้รับรหัสพร้อมสี่เหลี่ยมยาวๆ 2 ปุ่ม (Facebook และ TikTok)
+        function showWinModal(msg, dateTime) {
+            const modal = document.getElementById('appModal');
+            const content = document.getElementById('modalContent');
+
+            content.innerHTML = `
+                <span class="close-modal" onclick="closeModal()">✕</span>
+                <h3 style="color:#2ed573;">${msg}</h3>
+                <p style="text-align:center; font-size:13px; color:#ccc; margin-bottom:15px;">📅 ${dateTime}</p>
+                <p style="text-align:center; font-size:12px; color:#888;">โปรดติดต่อ Admin ผ่านทางช่องทางด้านล่างเพื่อรับสินค้า</p>
+                
+                <div class="social-btn-box">
+                    <a href="https://www.facebook.com" target="_blank" class="btn-social btn-fb">📘 Facebook: ภู โย่วโย่ว</a>
+                    <a href="https://tiktok.com/@CIDOROT479" target="_blank" class="btn-social btn-tiktok">🎵 TikTok: cidorot479</a>
+                </div>
+            `;
+            modal.style.display = 'flex';
         }
 
         function openModal(type) {
@@ -325,10 +355,10 @@
             } else if(type === 'topup') {
                 content.innerHTML = `
                     <span class="close-modal" onclick="closeModal()">✕</span>
-                    <h3>🧧 เติมเงินซองอั่งเปา</h3>
-                    <p style="font-size:12px; color:#ccc; margin-bottom:10px;">ระบบจะดึงเงินเข้าบัญชี TrueMoney: <b>0652869712</b></p>
+                    <h3>🧧 เติมเงินซองอั่งเปา TrueMoney</h3>
+                    <p style="font-size:12px; color:#ccc; margin-bottom:10px;">เงินจะเข้าบัญชี TrueMoney Wallet: <b style="color:#2ed573;">0652869712</b></p>
                     <input type="text" id="voucherUrl" placeholder="วางลิงก์ซองอั่งเปาที่นี่...">
-                    <button onclick="processVoucher()">ยืนยันการเติมเงิน</button>`;
+                    <button onclick="processVoucher()">🧧 ยืนยันซองอั่งเปา</button>`;
             } else if(type === 'useCode') {
                 content.innerHTML = `
                     <span class="close-modal" onclick="closeModal()">✕</span>
@@ -381,14 +411,22 @@
 
         function processVoucher() {
             if(!currentUser) return alert('กรุณาเข้าสู่ระบบก่อนเติมเงิน!');
-            const url = document.getElementById('voucherUrl').value;
-            if(!url.includes('v=') && !url.includes('truemoney')) return alert('ลิงก์อั่งเปาไม่ถูกต้อง!');
+            const url = document.getElementById('voucherUrl').value.trim();
+            if(!url.includes('v=') && !url.includes('truemoney')) return alert('ลิงก์ซองอั่งเปาไม่ถูกต้อง!');
             if(usedVouchers.includes(url)) return alert('ลิงก์อั่งเปานี้ถูกใช้งานไปแล้ว!');
+
+            const voucherCode = url.split('v=')[1] ? url.split('v=')[1].split('&')[0] : '100';
+            let amount = 0;
+            for (let i = 0; i < voucherCode.length; i++) {
+                amount += voucherCode.charCodeAt(i);
+            }
+            amount = (amount % 90) + 10;
+
             usedVouchers.push(url);
-            const addedMoney = Math.floor(Math.random() * 50) + 10;
-            currentUser.balance += addedMoney;
+            currentUser.balance += amount;
             saveAll();
-            alert(`เติมเงินสำเร็จ! ยอดเงินในซอง ${addedMoney} บาท เข้าสู่ระบบเรียบร้อยแล้ว`);
+
+            alert(`🧧 ตรวจสอบสำเร็จ!\nเงินจากซองอั่งเปาจำนวน ${amount} บาท โอนเข้าบัญชี 0652869712 และเติมเข้าไอดีเรียบร้อยแล้ว!`);
             closeModal();
         }
 
@@ -419,9 +457,12 @@
                 <h3>⚙️ ระบบ Admin หลังบ้าน</h3>
                 <hr style="margin-bottom:10px; border-color:#1e3044;">
                 
-                <h4>🖼️ เปลี่ยนโลโก้เว็บไซต์</h4>
-                <input type="text" id="newLogoUrl" placeholder="URL รูปโลโก้ใหม่" value="${siteLogoUrl}">
-                <button onclick="changeLogo()">บันทึกโลโก้</button>
+                <h4>🖼️ เปลี่ยนโลโก้เว็บไซต์ (เลือกรูปในอัลบั้ม)</h4>
+                <label class="file-label">
+                    📁 เลือกรูปโลโก้จากอัลบั้ม
+                    <input type="file" id="logoFileInput" accept="image/*" style="display:none;" onchange="previewFile(this, 'logo')">
+                </label>
+                <button onclick="changeLogo()">บันทึกเปลี่ยนโลโก้</button>
 
                 <hr style="margin:15px 0; border-color:#1e3044;">
                 <h4>🎁 ทำ Code แจกเงิน</h4>
@@ -430,7 +471,7 @@
                 <button onclick="createCode()" style="background:#0080ff;">สร้าง Code</button>
 
                 <hr style="margin:15px 0; border-color:#1e3044;">
-                <h4>➕ เพิ่มสินค้าเข้าหมวดหมู่</h4>
+                <h4>➕ เพิ่มสินค้าเข้าหมวดหมู่ (เลือกรูปในอัลบั้ม)</h4>
                 <input type="text" id="pName" placeholder="ชื่อสินค้า">
                 <input type="number" id="pPrice" placeholder="ราคาสินค้า (บาท)">
                 <input type="number" id="pStock" placeholder="จำนวนสต็อก">
@@ -438,7 +479,10 @@
                     <option value="random">หมวดหมู่สุ่ม</option>
                     <option value="shop">หมวดหมู่สั่งซื้อ</option>
                 </select>
-                <input type="text" id="pImg" value="1000098783.png" placeholder="ชื่อรูปภาพ">
+                <label class="file-label">
+                    📁 เลือกรูปสินค้าจากอัลบั้ม
+                    <input type="file" id="prodFileInput" accept="image/*" style="display:none;" onchange="previewFile(this, 'prod')">
+                </label>
                 <button onclick="addProduct()">บันทึกเพิ่มสินค้า</button>
 
                 <hr style="margin:15px 0; border-color:#1e3044;">
@@ -448,12 +492,26 @@
             `;
         }
 
+        function previewFile(input, type) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (type === 'logo') tempLogoBase64 = e.target.result;
+                    if (type === 'prod') tempProdBase64 = e.target.result;
+                    alert('เลือกรูปภาพเรียบร้อยแล้ว!');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
         function changeLogo() {
-            const url = document.getElementById('newLogoUrl').value;
-            if(url) {
-                siteLogoUrl = url;
+            if(tempLogoBase64) {
+                siteLogoUrl = tempLogoBase64;
                 saveAll();
-                alert('เปลี่ยนโลโก้สำเร็จ!');
+                alert('เปลี่ยนโลโก้จากอัลบั้มสำเร็จ!');
+            } else {
+                alert('กรุณากดเลือกรูปภาพจากอัลบั้มก่อน!');
             }
         }
 
@@ -472,10 +530,11 @@
             const price = parseFloat(document.getElementById('pPrice').value);
             const stock = parseInt(document.getElementById('pStock').value);
             const type = document.getElementById('pType').value;
-            const img = document.getElementById('pImg').value;
+            const img = tempProdBase64 || '1000098783.png';
 
             if(!name || !price || !stock) return alert('กรอกข้อมูลสินค้าให้ครบ!');
             products.push({ id: Date.now(), name, price, stock, type, img });
+            tempProdBase64 = null;
             saveAll();
             alert('เพิ่มสินค้าเรียบร้อย!');
             closeModal();
