@@ -3,86 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phoo Shop - บริการสุ่มรหัสและจำหน่ายไอดีราคาถูก</title>
+    <title>ภูเกมเซ็นเตอร์ - บริการสุ่มรหัสและจำหน่ายไอดีราคาถูก</title>
+    <!-- นำเข้าฟอนต์สไตล์น่ารัก (Mali) -->
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background-color: #0b131e; color: white; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mali', sans-serif !important; }
+        body { background-color: #f0f4f8; color: #333; }
         
-        .top-bar { background: #00a8ff; color: #000; text-align: center; padding: 8px; font-weight: bold; font-size: 14px; }
-        header { background: #121f2d; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .top-bar { background: #0077ff; color: #fff; text-align: center; padding: 8px; font-weight: bold; font-size: 14px; }
+        header { background: #ffffff; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: relative; border-bottom: 2px solid #e1e8ed; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .logo-box { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
-        .logo-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; }
-        .logo-text { font-size: 20px; font-weight: bold; color: #00a8ff; }
+        .logo-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #0077ff; }
+        .logo-text { font-size: 20px; font-weight: bold; color: #0077ff; font-style: italic; }
         
-        .menu-btn { font-size: 24px; cursor: pointer; color: #00a8ff; background: none; border: none; }
+        .menu-btn { font-size: 24px; cursor: pointer; color: #0077ff; background: none; border: none; }
         .auth-btns { display: flex; flex-direction: column; gap: 5px; text-align: right; }
         .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 12px; }
-        .btn-login { background: #00a8ff; color: white; }
-        .btn-reg { background: #0080ff; color: white; }
-        .btn-buy { background: #ff4757; color: white; font-size: 16px; padding: 12px; font-weight: bold; width: 100%; border-radius: 8px; border: none; cursor: pointer; }
-        .btn-random { background: #2ed573; color: white; font-size: 16px; padding: 12px; font-weight: bold; width: 100%; border-radius: 8px; border: none; cursor: pointer; }
-        .user-info { font-size: 13px; color: #00a8ff; font-weight: bold; }
+        .btn-login { background: #0077ff; color: white; }
+        .btn-reg { background: #0056b3; color: white; }
+        .btn-buy { background: #0077ff; color: white; font-size: 16px; padding: 12px; font-weight: bold; width: 100%; border-radius: 8px; border: none; cursor: pointer; }
+        .btn-random { background: #00b894; color: white; font-size: 16px; padding: 12px; font-weight: bold; width: 100%; border-radius: 8px; border: none; cursor: pointer; }
+        .user-info { font-size: 13px; color: #0077ff; font-weight: bold; }
 
         .container { padding: 15px; max-width: 600px; margin: auto; }
-        .banner-img { width: 100%; border-radius: 10px; border: 2px solid #00a8ff; margin-bottom: 15px; }
+        .banner-container { text-align: center; margin-bottom: 15px; }
+        .banner-title { color: #0077ff; font-size: 16px; font-weight: bold; margin-bottom: 8px; }
+        .banner-img { width: 100%; border-radius: 10px; border: 2px solid #0077ff; object-fit: cover; max-height: 250px; }
         
-        .card { background: #121f2d; padding: 15px; border-radius: 10px; border: 1px solid #1e3044; margin-bottom: 15px; }
-        .card-title { color: #00a8ff; font-size: 16px; margin-bottom: 10px; font-weight: bold; }
+        .card { background: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #d1d8e0; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .card-title { color: #0077ff; font-size: 16px; margin-bottom: 10px; font-weight: bold; }
         
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .grid-btn { background: #121f2d; border: 1px solid #00a8ff; padding: 15px; border-radius: 10px; text-align: center; cursor: pointer; }
-        .grid-btn h4 { color: white; margin-bottom: 5px; }
-        .grid-btn p { color: #00a8ff; font-size: 12px; }
+        .grid-btn { background: #ffffff; border: 1px solid #0077ff; padding: 15px; border-radius: 10px; text-align: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,119,255,0.1); }
+        .grid-btn h4 { color: #222; margin-bottom: 5px; }
+        .grid-btn p { color: #0077ff; font-size: 12px; }
 
-        .product-card { background: #121f2d; border: 1px solid #1e3044; border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 10px; }
-        .product-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
+        .product-card { background: #ffffff; border: 1px solid #d1d8e0; border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        .product-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; border: 1px solid #eee; }
 
-        .mobile-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #121f2d; z-index: 1000; transition: 0.3s; padding: 20px; border-right: 2px solid #00a8ff; overflow-y: auto; }
+        .mobile-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #ffffff; z-index: 1000; transition: 0.3s; padding: 20px; border-right: 2px solid #0077ff; overflow-y: auto; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
         .mobile-menu.active { left: 0; }
-        .mobile-menu a { display: block; color: white; text-decoration: none; padding: 12px 0; border-bottom: 1px solid #1e3044; }
-        .close-menu { text-align: right; font-size: 20px; cursor: pointer; color: #ff4757; margin-bottom: 10px; }
+        .mobile-menu a { display: block; color: #333; text-decoration: none; padding: 12px 0; border-bottom: 1px solid #eee; font-weight: 500; }
+        .close-menu { text-align: right; font-size: 20px; cursor: pointer; color: #ff4757; margin-bottom: 10px; font-weight: bold; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: #121f2d; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; border: 1px solid #00a8ff; position: relative; max-height: 90vh; overflow-y: auto; }
-        .modal-content h3 { color: #00a8ff; margin-bottom: 15px; text-align: center; }
-        .modal-content input, .modal-content select { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #1e3044; background: #0b131e; color: white; }
-        .modal-content button { width: 100%; padding: 10px; background: #00a8ff; border: none; color: white; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-        .close-modal { position: absolute; right: 15px; top: 10px; font-size: 20px; cursor: pointer; color: #ff4757; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: #ffffff; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; border: 1px solid #0077ff; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.2); color: #333; }
+        .modal-content h3 { color: #0077ff; margin-bottom: 15px; text-align: center; }
+        .modal-content input, .modal-content select { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc; background: #fdfdfd; color: #333; }
+        .modal-content button { width: 100%; padding: 10px; background: #0077ff; border: none; color: white; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        .close-modal { position: absolute; right: 15px; top: 10px; font-size: 20px; cursor: pointer; color: #ff4757; font-weight: bold; }
         
-        .history-item { background: #0b131e; padding: 8px; border-radius: 5px; margin-bottom: 5px; font-size: 12px; border-left: 3px solid #00a8ff; }
+        .history-item { background: #f8fafc; padding: 8px; border-radius: 5px; margin-bottom: 5px; font-size: 12px; border-left: 3px solid #0077ff; border: 1px solid #e2e8f0; }
         .empty-text { text-align: center; color: #888; font-size: 13px; padding: 10px 0; }
 
         .qty-box { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0; }
-        .qty-btn { width: 35px; height: 35px; background: #0b131e; border: 1px solid #1e3044; color: white; font-size: 18px; border-radius: 5px; cursor: pointer; }
+        .qty-btn { width: 35px; height: 35px; background: #f0f4f8; border: 1px solid #ccc; color: #333; font-size: 18px; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .qty-input { width: 60px !important; text-align: center; margin-bottom: 0 !important; }
         
-        .warning-box { background: #0b131e; padding: 10px; border-radius: 8px; border-left: 4px solid #ff4757; font-size: 12px; margin-bottom: 15px; line-height: 1.5; }
-        .file-label { display: block; background: #0b131e; border: 1px dashed #00a8ff; padding: 10px; text-align: center; border-radius: 5px; cursor: pointer; margin-bottom: 10px; font-size: 13px; }
+        .warning-box { background: #eef2f7; padding: 10px; border-radius: 8px; border-left: 4px solid #0077ff; font-size: 12px; margin-bottom: 15px; line-height: 1.5; color: #333; }
+        .file-label { display: block; background: #f8fafc; border: 1px dashed #0077ff; padding: 10px; text-align: center; border-radius: 5px; cursor: pointer; margin-bottom: 10px; font-size: 13px; color: #0077ff; font-weight: bold; }
 
-        /* ปุ่มติดต่อสี่เหลี่ยมยาวๆ */
         .social-btn-box { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
         .btn-social { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; color: white; font-size: 14px; cursor: pointer; text-align: center; text-decoration: none; display: block; }
         .btn-fb { background: #1877f2; }
         .btn-tiktok { background: #000000; border: 1px solid #fe2c55; color: #fe2c55; }
 
-        /* การ์ดสินค้าสำหรับแอดมินจัดการ */
-        .admin-prod-item { background: #0b131e; border: 1px solid #1e3044; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
-        .admin-prod-info { font-size: 12px; margin-bottom: 8px; }
+        .admin-prod-item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .admin-prod-thumb { width: 45px; height: 45px; object-fit: cover; border-radius: 5px; border: 1px solid #0077ff; flex-shrink: 0; }
+        .admin-prod-info { font-size: 12px; margin-bottom: 0; flex-grow: 1; color: #333; }
         .admin-prod-controls { display: flex; gap: 5px; align-items: center; }
-        .admin-prod-controls input { width: 70px !important; margin-bottom: 0 !important; padding: 5px !important; font-size: 12px; text-align: center; }
-        .btn-add-stock { background: #2ed573 !important; color: white; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px; width: auto !important; margin-top: 0 !important; }
+        .admin-prod-controls input { width: 60px !important; margin-bottom: 0 !important; padding: 5px !important; font-size: 12px; text-align: center; }
+        .btn-add-stock { background: #00b894 !important; color: white; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px; width: auto !important; margin-top: 0 !important; }
         .btn-del-prod { background: #ff4757 !important; color: white; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px; width: auto !important; margin-top: 0 !important; }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">⚡ Phoo shop บริการสุ่มรหัสและจำหน่ายไอดีราคาถูก ⚡</div>
+    <div class="top-bar">⚡ ภูเกมเซ็นเตอร์ บริการสุ่มรหัสและจำหน่ายไอดีราคาถูก ⚡</div>
 
     <header>
         <button class="menu-btn" onclick="toggleMenu()">☰</button>
         <div class="logo-box" onclick="handleSecretClick()">
             <img src="1000098783.png" class="logo-img" id="siteLogo" alt="Logo">
-            <div class="logo-text">Phoo shop</div>
+            <div class="logo-text">ภูเกมเซ็นเตอร์</div>
         </div>
         <div class="auth-btns" id="authBox">
             <button class="btn btn-login" onclick="openModal('login')">เข้าสู่ระบบ</button>
@@ -103,11 +106,35 @@
     </div>
 
     <div class="container">
-        <img src="1000098783.png" class="banner-img" alt="Phoo Shop Banner">
+        <!-- ภูเกมเซ็นเตอร์ Banner มีรูปภาพด้านบน -->
+        <div class="banner-container">
+            <div class="banner-title">ภูเกมเซ็นเตอร์ Banner</div>
+            <img src="1000098783.png" class="banner-img" id="siteBanner" alt="ภูเกมเซ็นเตอร์ Banner">
+        </div>
+
+        <!-- สถิติตามความจริงระบบ -->
+        <div class="card" style="padding: 10px 15px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; margin:8px 0; border-bottom:1px solid #eee; padding-bottom:8px;">
+                <span>👤 ผู้ใช้ทั้งหมด</span>
+                <span id="statUsers" style="color:#0077ff; font-weight:bold;">0 คน</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; margin:8px 0; border-bottom:1px solid #eee; padding-bottom:8px;">
+                <span>🛍️ สินค้าทั้งหมด</span>
+                <span id="statProducts" style="color:#0077ff; font-weight:bold;">0 ชิ้น</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; margin:8px 0; border-bottom:1px solid #eee; padding-bottom:8px;">
+                <span>📦 สต็อกทั้งหมด</span>
+                <span id="statStock" style="color:#0077ff; font-weight:bold;">0 ชิ้น</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; margin:8px 0;">
+                <span>✅ ขายแล้วทั้งหมด</span>
+                <span id="statSold" style="color:#00b894; font-weight:bold;">0 ชิ้น</span>
+            </div>
+        </div>
 
         <div class="card">
             <div class="card-title">📢 ประกาศ</div>
-            <p style="font-size: 13px; color: #ccc;">ยินดีต้อนรับสู่ Phoo shop สั่งซื้อสินค้าหรือสุ่มรหัสแล้ว ติดต่อทางเพจ Facebook หรือ TikTok ได้เลย!</p>
+            <p style="font-size: 13px; color: #555;">ยินดีต้อนรับสู่ ภูเกมเซ็นเตอร์ สั่งซื้อสินค้าหรือสุ่มรหัสแล้ว ติดต่อทางเพจ Facebook หรือ TikTok ได้เลย!</p>
         </div>
 
         <div class="grid-2">
@@ -159,13 +186,17 @@
         let tempProdBase64 = null;
 
         function saveAll() {
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            localStorage.setItem('products', JSON.stringify(products));
-            localStorage.setItem('randomHistory', JSON.stringify(randomHistory));
-            localStorage.setItem('shopHistory', JSON.stringify(shopHistory));
-            localStorage.setItem('usedVouchers', JSON.stringify(usedVouchers));
-            localStorage.setItem('promoCodes', JSON.stringify(promoCodes));
-            localStorage.setItem('siteLogoUrl', siteLogoUrl);
+            try {
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                localStorage.setItem('products', JSON.stringify(products));
+                localStorage.setItem('randomHistory', JSON.stringify(randomHistory));
+                localStorage.setItem('shopHistory', JSON.stringify(shopHistory));
+                localStorage.setItem('usedVouchers', JSON.stringify(usedVouchers));
+                localStorage.setItem('promoCodes', JSON.stringify(promoCodes));
+                localStorage.setItem('siteLogoUrl', siteLogoUrl);
+            } catch (e) {
+                alert('หน่วยความจำเต็ม (LocalStorage Limit) ไม่สามารถบันทึกเพิ่มได้ กรุณาล้างข้อมูลหรือใช้รูปที่มีขนาดเล็กลง');
+            }
             updateUI();
         }
 
@@ -192,6 +223,17 @@
 
         function updateUI() {
             document.getElementById('siteLogo').src = siteLogoUrl;
+            document.getElementById('siteBanner').src = siteLogoUrl;
+            
+            let totalStockCount = 0;
+            products.forEach(p => totalStockCount += Number(p.stock));
+            let totalSoldAndRandom = shopHistory.length + randomHistory.length;
+
+            document.getElementById('statUsers').innerText = currentUser ? "1 คน" : "0 คน";
+            document.getElementById('statProducts').innerText = products.length + " ชิ้น";
+            document.getElementById('statStock').innerText = totalStockCount + " ชิ้น";
+            document.getElementById('statSold').innerText = totalSoldAndRandom + " ชิ้น";
+
             const authBox = document.getElementById('authBox');
             if(currentUser) {
                 authBox.innerHTML = `
@@ -220,8 +262,8 @@
                     randomList.innerHTML += `
                         <div class="product-card">
                             <img src="${p.img}" class="product-img">
-                            <h4>${p.name}</h4>
-                            <p style="color:#00a8ff; font-weight:bold;">ราคา: ${p.price} บาท | สต็อก: ${p.stock}</p>
+                            <h4 style="color:#333;">${p.name}</h4>
+                            <p style="color:#0077ff; font-weight:bold;">ราคา: ${p.price} บาท | สต็อก: ${p.stock}</p>
                             <button class="btn btn-login" style="width:100%; margin-top:8px;" onclick="openProductDetail(${p.id})">🎲 สุ่มรหัสนี้</button>
                         </div>`;
                 });
@@ -233,8 +275,8 @@
                     shopList.innerHTML += `
                         <div class="product-card">
                             <img src="${p.img}" class="product-img">
-                            <h4>${p.name}</h4>
-                            <p style="color:#00a8ff; font-weight:bold;">ราคา: ${p.price} บาท | สต็อก: ${p.stock}</p>
+                            <h4 style="color:#333;">${p.name}</h4>
+                            <p style="color:#0077ff; font-weight:bold;">ราคา: ${p.price} บาท | สต็อก: ${p.stock}</p>
                             <button class="btn btn-login" style="width:100%; margin-top:8px;" onclick="openProductDetail(${p.id})">🛒 สั่งซื้อสินค้า</button>
                         </div>`;
                 });
@@ -258,7 +300,7 @@
                     <div class="warning-box">
                         <strong>🎥 คำเตือนก่อนซื้อ!!</strong><br>
                         คำเตือน !! ก่อนซื้อทุกครั้งอัดคลิปหน้าจอ ไปจนถึงเข้ารหัสผ่านแอป Roblox หากไม่มีคลิปงดเคลมทุกกรณี เพื่อความสบายใจทั้ง2ฝ่าย อัดคลิปด้วยนะจ้ะสุดหล่อ<br>
-                        <span style="color:#2ed573;">[ ซื้อไปแล้วถูกใจฝากรีวิวให้ด้วยนะค้าบ ]</span>
+                        <span style="color:#00b894; font-weight:bold;">[ ซื้อไปแล้วถูกใจฝากรีวิวให้ด้วยนะค้าบ ]</span>
                     </div>
 
                     <div style="font-size:14px; margin-bottom:5px;">จำนวนสินค้า</div>
@@ -267,7 +309,7 @@
                         <input type="number" id="buyQty" class="qty-input" value="1" readonly>
                         <button class="qty-btn" onclick="changeQty(1)">+</button>
                     </div>
-                    <p style="text-align:center; font-size:12px; color:#888; margin-bottom:15px;">เหลือสินค้าอีก ${selectedProduct.stock} ชิ้น</p>
+                    <p style="text-align:center; font-size:12px; color:#666; margin-bottom:15px;">เหลือสินค้าอีก ${selectedProduct.stock} ชิ้น</p>
 
                     <button class="btn-buy" onclick="confirmAction()">🛒 ซื้อสินค้าเลย</button>
                 `;
@@ -276,8 +318,8 @@
                     <span class="close-modal" onclick="closeModal()">✕</span>
                     <h3>🎲 สุ่มรหัส: ${selectedProduct.name}</h3>
                     <img src="${selectedProduct.img}" style="width:100%; height:150px; object-fit:cover; border-radius:8px; margin-bottom:10px;">
-                    <p style="text-align:center; font-weight:bold; color:#00a8ff; margin-bottom:10px;">ราคาค่าสุ่ม: ${selectedProduct.price} บาท / ครั้ง</p>
-                    <p style="text-align:center; font-size:12px; color:#888; margin-bottom:15px;">เหลือสต็อกให้สุ่มอีก ${selectedProduct.stock} ชิ้น</p>
+                    <p style="text-align:center; font-weight:bold; color:#0077ff; margin-bottom:10px;">ราคาค่าสุ่ม: ${selectedProduct.price} บาท / ครั้ง</p>
+                    <p style="text-align:center; font-size:12px; color:#666; margin-bottom:15px;">เหลือสต็อกให้สุ่มอีก ${selectedProduct.stock} ชิ้น</p>
                     <button class="btn-random" onclick="confirmAction()">🎲 สุ่มรหัสเลยทันที</button>
                 `;
             }
@@ -325,9 +367,9 @@
 
             content.innerHTML = `
                 <span class="close-modal" onclick="closeModal()">✕</span>
-                <h3 style="color:#2ed573;">${msg}</h3>
-                <p style="text-align:center; font-size:13px; color:#ccc; margin-bottom:15px;">📅 ${dateTime}</p>
-                <p style="text-align:center; font-size:12px; color:#888;">โปรดติดต่อ Admin ผ่านทางช่องทางด้านล่างเพื่อรับสินค้า</p>
+                <h3 style="color:#00b894;">${msg}</h3>
+                <p style="text-align:center; font-size:13px; color:#666; margin-bottom:15px;">📅 ${dateTime}</p>
+                <p style="text-align:center; font-size:12px; color:#666;">โปรดติดต่อ Admin ผ่านทางช่องทางด้านล่างเพื่อรับสินค้า</p>
                 
                 <div class="social-btn-box">
                     <a href="https://www.facebook.com" target="_blank" class="btn-social btn-fb">📘 Facebook: ภู โย่วโย่ว</a>
@@ -360,7 +402,7 @@
                 content.innerHTML = `
                     <span class="close-modal" onclick="closeModal()">✕</span>
                     <h3>🧧 เติมเงินซองอั่งเปา TrueMoney</h3>
-                    <p style="font-size:12px; color:#ccc; margin-bottom:10px;">เงินจะเข้าบัญชี TrueMoney Wallet: <b style="color:#2ed573;">0652869712</b></p>
+                    <p style="font-size:12px; color:#666; margin-bottom:10px;">เงินจะเข้าบัญชี TrueMoney Wallet: <b style="color:#00b894;">0652869712</b></p>
                     <input type="text" id="voucherUrl" placeholder="วางลิงก์ซองอั่งเปาที่นี่...">
                     <button onclick="processVoucher()">🧧 ยืนยันซองอั่งเปา</button>`;
             } else if(type === 'useCode') {
@@ -465,14 +507,15 @@
                     const typeTxt = p.type === 'random' ? '[สุ่ม]' : '[ซื้อ]';
                     prodListHtml += `
                         <div class="admin-prod-item">
+                            <img src="${p.img}" class="admin-prod-thumb">
                             <div class="admin-prod-info">
                                 <b>${typeTxt} ${p.name}</b><br>
-                                <span style="color:#00a8ff;">ราคา: ${p.price} บ. | สต็อกปัจจุบัน: <b>${p.stock}</b></span>
+                                <span style="color:#0077ff;">ราคา: ${p.price} บ. | สต็อก: <b>${p.stock}</b></span>
                             </div>
                             <div class="admin-prod-controls">
                                 <input type="number" id="addStockInput_${p.id}" placeholder="จำนวน" min="1">
-                                <button class="btn-add-stock" onclick="addStock(${p.id})">➕ เติมสต็อก</button>
-                                <button class="btn-del-prod" onclick="deleteProduct(${p.id})">❌ ลบ</button>
+                                <button class="btn-add-stock" onclick="addStock(${p.id})">➕ เติม</button>
+                                <button class="btn-del-prod" onclick="deleteProduct(${p.id})">❌</button>
                             </div>
                         </div>`;
                 });
@@ -481,22 +524,22 @@
             content.innerHTML = `
                 <span class="close-modal" onclick="closeModal()">✕</span>
                 <h3>⚙️ ระบบ Admin หลังบ้าน</h3>
-                <hr style="margin-bottom:10px; border-color:#1e3044;">
+                <hr style="margin-bottom:10px; border-color:#eee;">
                 
                 <h4>🖼️ เปลี่ยนโลโก้เว็บไซต์ (เลือกรูปในอัลบั้ม)</h4>
                 <label class="file-label">
                     📁 เลือกรูปโลโก้จากอัลบั้ม
-                    <input type="file" id="logoFileInput" accept="image/*" style="display:none;" onchange="previewFile(this, 'logo')">
+                    <input type="file" id="logoFileInput" accept="image/*" style="display:none;" onchange="compressImage(this, 'logo')">
                 </label>
                 <button onclick="changeLogo()">บันทึกเปลี่ยนโลโก้</button>
 
-                <hr style="margin:15px 0; border-color:#1e3044;">
+                <hr style="margin:15px 0; border-color:#eee;">
                 <h4>🎁 ทำ Code แจกเงิน</h4>
                 <input type="text" id="newCode" placeholder="ชื่อ Code (เช่น PHOO100)">
                 <input type="number" id="newCodeVal" placeholder="จำนวนเงิน">
-                <button onclick="createCode()" style="background:#0080ff;">สร้าง Code</button>
+                <button onclick="createCode()" style="background:#0056b3;">สร้าง Code</button>
 
-                <hr style="margin:15px 0; border-color:#1e3044;">
+                <hr style="margin:15px 0; border-color:#eee;">
                 <h4>➕ เพิ่มสินค้าเข้าหมวดหมู่ (เลือกรูปในอัลบั้ม)</h4>
                 <input type="text" id="pName" placeholder="ชื่อสินค้า">
                 <input type="number" id="pPrice" placeholder="ราคาสินค้า (บาท)">
@@ -505,22 +548,22 @@
                     <option value="random">หมวดหมู่สุ่ม</option>
                     <option value="shop">หมวดหมู่สั่งซื้อ</option>
                 </select>
-                <label class="file-label">
+                <label class="file-label" id="prodFileLabel">
                     📁 เลือกรูปสินค้าจากอัลบั้ม
-                    <input type="file" id="prodFileInput" accept="image/*" style="display:none;" onchange="previewFile(this, 'prod')">
+                    <input type="file" id="prodFileInput" accept="image/*" style="display:none;" onchange="compressImage(this, 'prod')">
                 </label>
                 <button onclick="addProduct()">บันทึกเพิ่มสินค้า</button>
 
-                <hr style="margin:15px 0; border-color:#1e3044;">
+                <hr style="margin:15px 0; border-color:#eee;">
                 <h4>📦 จัดการสินค้า / เพิ่มสต็อก</h4>
-                <div style="max-height:200px; overflow-y:auto; margin-bottom:10px;">
+                <div style="max-height:220px; overflow-y:auto; margin-bottom:10px;">
                     ${prodListHtml}
                 </div>
 
-                <hr style="margin:15px 0; border-color:#1e3044;">
+                <hr style="margin:15px 0; border-color:#eee;">
                 <h4>✨ เสกเงินเข้าบัญชีตัวเอง</h4>
                 <input type="number" id="addMoneyNum" placeholder="จำนวนเงิน">
-                <button onclick="adminAddMoney()" style="background:#2ed573;">เสกเงินทันที</button>
+                <button onclick="adminAddMoney()" style="background:#00b894;">เสกเงินทันที</button>
             `;
         }
 
@@ -546,17 +589,52 @@
             }
         }
 
-        function previewFile(input, type) {
+        function compressImage(input, type) {
             const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    if (type === 'logo') tempLogoBase64 = e.target.result;
-                    if (type === 'prod') tempProdBase64 = e.target.result;
-                    alert('เลือกรูปภาพเรียบร้อยแล้ว!');
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 300;
+                    const MAX_HEIGHT = 300;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+
+                    if (type === 'logo') {
+                        tempLogoBase64 = compressedDataUrl;
+                        alert('เลือกและบีบอัดรูปโลโก้เรียบร้อยแล้ว!');
+                    } else if (type === 'prod') {
+                        tempProdBase64 = compressedDataUrl;
+                        document.getElementById('prodFileLabel').style.borderColor = '#00b894';
+                        document.getElementById('prodFileLabel').innerHTML = '✅ เลือกรูปสินค้าสำเร็จแล้ว';
+                        alert('เลือกและบีบอัดรูปสินค้าเรียบร้อยแล้ว!');
+                    }
                 }
-                reader.readAsDataURL(file);
             }
+            reader.readAsDataURL(file);
         }
 
         function changeLogo() {
