@@ -64,6 +64,14 @@
         .btn-social { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; color: white; font-size: 14px; cursor: pointer; text-align: center; text-decoration: none; display: block; }
         .btn-fb { background: #1877f2; }
         .btn-tiktok { background: #000000; border: 1px solid #fe2c55; color: #fe2c55; }
+
+        /* การ์ดสินค้าสำหรับแอดมินจัดการ */
+        .admin-prod-item { background: #0b131e; border: 1px solid #1e3044; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .admin-prod-info { font-size: 12px; margin-bottom: 8px; }
+        .admin-prod-controls { display: flex; gap: 5px; align-items: center; }
+        .admin-prod-controls input { width: 70px !important; margin-bottom: 0 !important; padding: 5px !important; font-size: 12px; text-align: center; }
+        .btn-add-stock { background: #2ed573 !important; color: white; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px; width: auto !important; margin-top: 0 !important; }
+        .btn-del-prod { background: #ff4757 !important; color: white; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px; width: auto !important; margin-top: 0 !important; }
     </style>
 </head>
 <body>
@@ -293,9 +301,6 @@
             selectedProduct.stock -= (selectedProduct.type === 'shop' ? currentQty : 1);
             const dateTime = getFormattedDate();
 
-            const modal = document.getElementById('appModal');
-            const content = document.getElementById('modalContent');
-
             if(selectedProduct.type === 'random') {
                 const isWin = Math.random() > 0.5;
                 if(isWin) {
@@ -314,7 +319,6 @@
             saveAll();
         }
 
-        // แสดงหน้าได้รับรหัสพร้อมสี่เหลี่ยมยาวๆ 2 ปุ่ม (Facebook และ TikTok)
         function showWinModal(msg, dateTime) {
             const modal = document.getElementById('appModal');
             const content = document.getElementById('modalContent');
@@ -452,6 +456,28 @@
 
         function openAdminPanel() {
             const content = document.getElementById('modalContent');
+            
+            let prodListHtml = '';
+            if(products.length === 0) {
+                prodListHtml = '<div class="empty-text">ไม่มีสินค้าในระบบ</div>';
+            } else {
+                products.forEach(p => {
+                    const typeTxt = p.type === 'random' ? '[สุ่ม]' : '[ซื้อ]';
+                    prodListHtml += `
+                        <div class="admin-prod-item">
+                            <div class="admin-prod-info">
+                                <b>${typeTxt} ${p.name}</b><br>
+                                <span style="color:#00a8ff;">ราคา: ${p.price} บ. | สต็อกปัจจุบัน: <b>${p.stock}</b></span>
+                            </div>
+                            <div class="admin-prod-controls">
+                                <input type="number" id="addStockInput_${p.id}" placeholder="จำนวน" min="1">
+                                <button class="btn-add-stock" onclick="addStock(${p.id})">➕ เติมสต็อก</button>
+                                <button class="btn-del-prod" onclick="deleteProduct(${p.id})">❌ ลบ</button>
+                            </div>
+                        </div>`;
+                });
+            }
+
             content.innerHTML = `
                 <span class="close-modal" onclick="closeModal()">✕</span>
                 <h3>⚙️ ระบบ Admin หลังบ้าน</h3>
@@ -486,10 +512,38 @@
                 <button onclick="addProduct()">บันทึกเพิ่มสินค้า</button>
 
                 <hr style="margin:15px 0; border-color:#1e3044;">
+                <h4>📦 จัดการสินค้า / เพิ่มสต็อก</h4>
+                <div style="max-height:200px; overflow-y:auto; margin-bottom:10px;">
+                    ${prodListHtml}
+                </div>
+
+                <hr style="margin:15px 0; border-color:#1e3044;">
                 <h4>✨ เสกเงินเข้าบัญชีตัวเอง</h4>
                 <input type="number" id="addMoneyNum" placeholder="จำนวนเงิน">
                 <button onclick="adminAddMoney()" style="background:#2ed573;">เสกเงินทันที</button>
             `;
+        }
+
+        function addStock(id) {
+            const input = document.getElementById(`addStockInput_${id}`);
+            const amount = parseInt(input.value);
+            if(!amount || amount <= 0) return alert('กรุณากรอกจำนวนสต็อกที่ต้องการเพิ่ม!');
+            
+            const prod = products.find(p => p.id === id);
+            if(prod) {
+                prod.stock += amount;
+                saveAll();
+                alert(`เพิ่มสต็อกสินค้า "${prod.name}" เรียบร้อยแล้ว +${amount} ชิ้น!`);
+                openAdminPanel();
+            }
+        }
+
+        function deleteProduct(id) {
+            if(confirm('คุณแน่ใจใช่ไหมว่าต้องการลบสินค้านี้?')) {
+                products = products.filter(p => p.id !== id);
+                saveAll();
+                openAdminPanel();
+            }
         }
 
         function previewFile(input, type) {
